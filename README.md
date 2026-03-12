@@ -17,6 +17,7 @@ The idea is simple: automate the first stage of interviews using **AI + Voice Te
 🧠 **AI Prompts** – Dynamic interview generation
 
 🌐 **Live Demo:** https://vox-hire-voice-agent.vercel.app
+
 💻 **GitHub Repository:** https://github.com/h1a2r3s4h/VoxHire---Voice-agent
 
 This project helped me explore how **AI, voice technology, and modern web development** can build real-world HR tech solutions.
