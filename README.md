@@ -1,36 +1,28 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+🚀 **Introducing VOX HIRE – AI Recruiter Voice Agent**
 
-## Getting Started
+I’m excited to share my latest **full-stack project: VOX HIRE**, an AI-powered recruiter that can **create and conduct job interviews using voice**.
 
-First, run the development server:
+The idea is simple: automate the first stage of interviews using **AI + Voice Technology**, making the hiring process faster and more scalable.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+💡 **Key Features**
+• AI generates interview questions automatically
+• Conducts real-time **voice interviews** with candidates
+• Records and analyzes candidate responses
+• Generates structured interview feedback
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+🛠 **Tech Stack**
+⚛️ **Next.js & React** – Modern full-stack web development
+🗣️ **Vapi** – Real-time voice AI conversations
+🔐 **Supabase** – Database, backend, and authentication
+🧠 **AI Prompts** – Dynamic interview generation
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+🌐 **Live Demo:** https://vox-hire-voice-agent.vercel.app
+💻 **GitHub Repository:** https://github.com/h1a2r3s4h/VoxHire---Voice-agent
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+This project helped me explore how **AI, voice technology, and modern web development** can build real-world HR tech solutions.
 
-## Learn More
+I’m currently building more projects around **AI + scalable web applications**.
 
-To learn more about Next.js, take a look at the following resources:
+Would love to hear your feedback! 🙌
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+#AI #NextJS #ReactJS #VoiceAI #Supabase #FullStackDevelopment #WebDevelopment #TechProjects
