@@ -21,6 +21,19 @@ https://github.com/h1a2r3s4h/VoxHire---Voice-agent
 
 ---
 
+# 📸 Screenshots
+
+## Dashboard
+![Dashboard](public/screenshots/dashboard.png)
+
+## Interview Page
+![Interview](public/screenshots/interview.png)
+
+## Feedback
+![Feedback](public/screenshots/feedback.png)
+
+---
+
 # ✨ Features
 
 ### 🤖 AI Interview Generation
