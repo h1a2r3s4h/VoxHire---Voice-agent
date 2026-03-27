@@ -1,6 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  turbopack: {},  // ← add this
+  experimental: {
+    turbo: {
+      resolveAlias: {
+        canvas: false,
+        encoding: false,
+      },
+    },
+  },
   images: {
     remotePatterns: [
       {
