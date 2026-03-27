@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  turbopack: {},  // ← add this
   images: {
     remotePatterns: [
       {
@@ -17,5 +18,4 @@ const nextConfig = {
     return config;
   },
 };
-
 export default nextConfig;
