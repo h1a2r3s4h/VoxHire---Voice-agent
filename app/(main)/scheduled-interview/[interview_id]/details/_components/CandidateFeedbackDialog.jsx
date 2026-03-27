@@ -11,14 +11,37 @@ import { Button } from "@/components/ui/button";
 
 const CandidateFeedbackDialog = ({ candidate }) => {
   const feedbackData = candidate?.feedback?.feedback || candidate?.feedback || {};
+  const rating = feedbackData?.rating || {};
 
-const handleSendMsg = () => {
-  const subject = feedbackData?.Recommendation
-    ? "Interview Result - Next Round"
-    : "Interview Feedback";
+  const technicalSkills = rating?.technicalSkills ?? rating?.techicalSkills ?? 0;
+  const communication = rating?.communication ?? 0;
+  const problemSolving = rating?.problemSolving ?? 0;
+  const experience = rating?.experience ?? 0;
 
-  const body = feedbackData?.Recommendation
-    ? `Hi ${candidate?.userName || "Candidate"},
+  const hasCompletedFeedback =
+    technicalSkills > 0 ||
+    communication > 0 ||
+    problemSolving > 0 ||
+    experience > 0 ||
+    feedbackData?.summery ||
+    feedbackData?.RecommendationMsg;
+
+  const avgRating = hasCompletedFeedback
+    ? Math.round(
+        (technicalSkills + communication + problemSolving + experience) / 4
+      )
+    : 0;
+
+  const handleSendMsg = () => {
+    const subject = hasCompletedFeedback
+      ? feedbackData?.Recommendation
+        ? "Interview Result - Next Round"
+        : "Interview Feedback"
+      : "Interview Status Update";
+
+    const body = hasCompletedFeedback
+      ? feedbackData?.Recommendation
+        ? `Hi ${candidate?.userName || "Candidate"},
 
 Congratulations! Based on your interview performance, you have been shortlisted for the next round.
 
@@ -27,7 +50,7 @@ ${feedbackData?.summery || "Good performance."}
 
 Best regards,
 Recruitment Team`
-    : `Hi ${candidate?.userName || "Candidate"},
+        : `Hi ${candidate?.userName || "Candidate"},
 
 Thank you for attending the interview.
 
@@ -40,24 +63,20 @@ Recommendation Message:
 ${feedbackData?.RecommendationMsg || "Keep improving and apply again in the future."}
 
 Best regards,
+Recruitment Team`
+      : `Hi ${candidate?.userName || "Candidate"},
+
+Thank you for your time.
+
+Your interview was not completed, so detailed feedback is not available yet.
+
+Best regards,
 Recruitment Team`;
 
-  window.location.href = `mailto:${candidate?.userEmail}?subject=${encodeURIComponent(
-    subject
-  )}&body=${encodeURIComponent(body)}`;
-};
-
-  const rating = feedbackData?.rating || {};
-
-  const technicalSkills = rating?.techicalSkills ?? 0;
-  const communication = rating?.communication ?? 0;
-  const problemSolving = rating?.problemSolving ?? 0;
-  const experience = rating?.experience ?? 0;
-
-  const avgRating =
-    Math.round(
-      (technicalSkills + communication + problemSolving + experience) / 4
-    ) || 0;
+    window.location.href = `mailto:${candidate?.userEmail}?subject=${encodeURIComponent(
+      subject
+    )}&body=${encodeURIComponent(body)}`;
+  };
 
   const getWidth = (value) => `${(value / 10) * 100}%`;
 
@@ -118,48 +137,63 @@ Recruitment Team`;
         </DialogHeader>
 
         <div className="px-6 pb-6">
-          <div className="mt-6">
-            <h2 className="text-2xl font-bold text-gray-700 mb-6">
-              Skills Assessment
-            </h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <ScoreBar label="Technical Skills" value={technicalSkills} />
-              <ScoreBar label="Communication" value={communication} />
-              <ScoreBar label="Problem Solving" value={problemSolving} />
-              <ScoreBar label="Experience" value={experience} />
+          {!hasCompletedFeedback ? (
+            <div className="mt-8 bg-yellow-50 border border-yellow-200 rounded-2xl p-6">
+              <h2 className="text-2xl font-bold text-yellow-700 mb-3">
+                Interview Incomplete
+              </h2>
+              <p className="text-lg text-yellow-700 leading-8">
+                This candidate did not complete the full interview, so detailed
+                feedback, ratings, summary, and recommendation are not available.
+              </p>
             </div>
-          </div>
-
-          <div className="mt-8">
-            <h2 className="text-2xl font-bold text-gray-700 mb-4">
-              Performance Summery
-            </h2>
-
-            <div className="bg-gray-100 rounded-2xl p-6 text-gray-600 text-lg leading-9">
-              {feedbackData?.summery || "No summary available"}
-            </div>
-          </div>
-
-          <div className="mt-8">
-            <div className="bg-red-50 rounded-2xl p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-              <div>
-                <h2 className="text-2xl font-bold text-red-700">
-                  Recommendation Msg:
+          ) : (
+            <>
+              <div className="mt-6">
+                <h2 className="text-2xl font-bold text-gray-700 mb-6">
+                  Skills Assessment
                 </h2>
-                <p className="text-red-600 text-lg mt-2 leading-8">
-                  {feedbackData?.RecommendationMsg || "No recommendation message available"}
-                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <ScoreBar label="Technical Skills" value={technicalSkills} />
+                  <ScoreBar label="Communication" value={communication} />
+                  <ScoreBar label="Problem Solving" value={problemSolving} />
+                  <ScoreBar label="Experience" value={experience} />
+                </div>
               </div>
 
-              <Button
-  onClick={handleSendMsg}
-  className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl"
->
-  Send Msg
-</Button>
-            </div>
-          </div>
+              <div className="mt-8">
+                <h2 className="text-2xl font-bold text-gray-700 mb-4">
+                  Performance Summary
+                </h2>
+
+                <div className="bg-gray-100 rounded-2xl p-6 text-gray-600 text-lg leading-9">
+                  {feedbackData?.summery || "No summary available"}
+                </div>
+              </div>
+
+              <div className="mt-8">
+                <div className="bg-red-50 rounded-2xl p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                  <div>
+                    <h2 className="text-2xl font-bold text-red-700">
+                      Recommendation Msg:
+                    </h2>
+                    <p className="text-red-600 text-lg mt-2 leading-8">
+                      {feedbackData?.RecommendationMsg ||
+                        "No recommendation message available"}
+                    </p>
+                  </div>
+
+                  <Button
+                    onClick={handleSendMsg}
+                    className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl"
+                  >
+                    Send Msg
+                  </Button>
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </DialogContent>
     </Dialog>

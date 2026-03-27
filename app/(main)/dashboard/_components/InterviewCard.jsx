@@ -9,7 +9,17 @@ import { FaWhatsapp } from "react-icons/fa";
 import { toast } from "sonner";
 
 function InterviewCard({ interview, viewDetail = false }) {
+   console.log("InterviewCard Data:", interview);
   const url = `${process.env.NEXT_PUBLIC_HOST_URL}/${interview?.interview_id}`;
+
+  const feedbackList =
+    interview?.["interview-feedback"] ||
+    interview?.interview_feedback ||
+    interview?.feedback ||
+    interview?.candidates ||
+    [];
+
+  const candidateCount = Array.isArray(feedbackList) ? feedbackList.length : 0;
 
   const copyLink = async () => {
     try {
@@ -47,9 +57,7 @@ function InterviewCard({ interview, viewDetail = false }) {
 
       <h2 className="mt-2 text-gray-500 flex justify-between">
         <span>{interview?.duration} Min</span>
-        <span className="text-green-700">
-          {interview?.["interview-feedback"]?.length || 0} Candidates
-        </span>
+        <span className="text-green-700">{candidateCount} Candidates</span>
       </h2>
 
       {!viewDetail ? (

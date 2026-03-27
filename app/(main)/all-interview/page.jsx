@@ -11,13 +11,22 @@ const AllInterview = () => {
   const { user } = useUser();
 
   useEffect(() => {
-    user && GetInterviewList();
+    if (user?.email) {
+      GetInterviewList();
+    }
   }, [user]);
 
   const GetInterviewList = async () => {
-    let { data: Interviews, error } = await supabase
+    const { data, error } = await supabase
       .from("Interviews")
-      .select("*")
+      .select(`
+        *,
+        interview_feedback:interview-feedback (
+          userEmail,
+          feedback,
+          recommended
+        )
+      `)
       .eq("userEmail", user?.email)
       .order("id", { ascending: false });
 
@@ -26,15 +35,15 @@ const AllInterview = () => {
       return;
     }
 
-    console.log(Interviews);
-    setInterviewList(Interviews);
+    console.log("Interview List:", data);
+    setInterviewList(data || []);
   };
 
   return (
     <div className="my-5">
       <h2 className="font-bold text-2xl">Previously Created Interview</h2>
 
-      {interviewList?.length == 0 && (
+      {interviewList?.length === 0 && (
         <div className="p-5 flex flex-col gap-3 items-center bg-white mt-5">
           <Video className="h-10 w-10 text-primary" />
           <h2>You don't have any interview created!</h2>
@@ -45,7 +54,10 @@ const AllInterview = () => {
       {interviewList?.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 mt-5">
           {interviewList.map((interview) => (
-            <InterviewCard interview={interview} key={interview.interview_id} />
+            <InterviewCard
+              interview={interview}
+              key={interview.interview_id}
+            />
           ))}
         </div>
       )}

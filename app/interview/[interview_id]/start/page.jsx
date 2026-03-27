@@ -2,7 +2,7 @@
 
 import { InterviewDataContext } from "@/context/InterviewDataContext";
 import InterviewTimer from "./_components/InterviewTimer";
-import { Timer, Bot, User, Mic, Phone } from "lucide-react";
+import { Bot, User, Mic, Phone } from "lucide-react";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import Vapi from "@vapi-ai/web";
 import AlertConfirmation from "./_components/AlertConfirmation";
@@ -15,7 +15,6 @@ const StartInterview = () => {
   const { interviewInfo } = useContext(InterviewDataContext);
 
   const [activeUser, setActiveUser] = useState(false);
-  const [seconds, setSeconds] = useState(0);
   const [interviewStarted, setInterviewStarted] = useState(false);
 
   const { interview_id } = useParams();
@@ -27,32 +26,15 @@ const StartInterview = () => {
   const feedbackSavedRef = useRef(false);
   const manualStopRef = useRef(false);
   const endingRef = useRef(false);
+  const redirectingRef = useRef(false);
 
   const completedPath = `/interview/${id}/completed`;
 
   const hardRedirectToCompleted = () => {
+    if (redirectingRef.current) return;
+    redirectingRef.current = true;
     window.location.replace(completedPath);
   };
-
-  // const formatTime = (totalSeconds) => {
-  //   const hrs = String(Math.floor(totalSeconds / 3600)).padStart(2, "0");
-  //   const mins = String(Math.floor((totalSeconds % 3600) / 60)).padStart(
-  //     2,
-  //     "0"
-  //   );
-  //   const secs = String(totalSeconds % 60).padStart(2, "0");
-  //   return `${hrs}:${mins}:${secs}`;
-  // };
-
-  // useEffect(() => {
-  //   if (!interviewStarted) return;
-
-  //   const interval = setInterval(() => {
-  //     setSeconds((curr) => curr + 1);
-  //   }, 1000);
-
-  //   return () => clearInterval(interval);
-  // }, [interviewStarted]);
 
   const saveCancelledInterview = async () => {
     try {
@@ -87,6 +69,7 @@ const StartInterview = () => {
   const generateFeedback = async (currConversation) => {
     try {
       if (!currConversation) {
+        console.warn("No conversation found, redirecting without feedback");
         toast.error("Conversation not found for feedback.");
         hardRedirectToCompleted();
         return;
@@ -106,7 +89,7 @@ const StartInterview = () => {
       try {
         parsedFeedback = JSON.parse(finalContent);
       } catch (parseError) {
-        console.error("JSON parse error:", parseError);
+        console.error("JSON parse error:", parseError, finalContent);
         toast.error("Invalid feedback JSON received.");
         hardRedirectToCompleted();
         return;
@@ -132,7 +115,7 @@ const StartInterview = () => {
       ]);
 
       if (error) {
-        console.error("Supabase insert error:", error);
+        console.error("Supabase feedback insert error:", error);
         toast.error("Failed to save feedback.");
       }
 
@@ -147,10 +130,10 @@ const StartInterview = () => {
   const startCall = async () => {
     if (!interviewInfo?.interviewData || !vapiRef.current) return;
 
-    let questionList = "";
-    (interviewInfo?.interviewData?.questionList || []).forEach((item) => {
-      questionList += item?.question + " ";
-    });
+    const questions = interviewInfo?.interviewData?.questionList || [];
+    const questionList = questions
+      .map((item, index) => `${index + 1}. ${item?.question}`)
+      .join("\n");
 
     const jobPosition = interviewInfo?.interviewData?.jobPosition || "this role";
 
@@ -173,18 +156,25 @@ const StartInterview = () => {
           {
             role: "system",
             content: `
-You are an AI voice assistant conducting interviews.
-Your job is to ask candidates the provided interview questions and assess their responses.
+You are an AI voice assistant conducting an interview for ${jobPosition}.
 
-Ask one question at a time and wait for the candidate's response before proceeding.
+You must ask ONLY the interview questions provided below, one at a time, and wait for the candidate's response before moving to the next question.
 
 Interview questions:
 ${questionList}
 
-If the candidate struggles, offer hints or rephrase the question without giving away the answer.
-Provide brief, encouraging feedback after each answer.
-Keep the conversation natural and professional.
-Ensure the interview remains focused on ${jobPosition}.
+Rules:
+- Ask one question at a time.
+- Wait for the candidate's answer before asking the next question.
+- After each answer, give a brief professional acknowledgment.
+- If the candidate struggles, rephrase the question or offer a small hint without revealing the answer.
+- Do not ask unrelated follow-up questions.
+- Do not continue the conversation after the final question.
+- After all questions are completed, say exactly:
+"The interview is now complete. Thank you for your time."
+- After saying that, end the call.
+
+Keep the conversation professional, concise, and focused on ${jobPosition}.
             `.trim(),
           },
         ],
@@ -192,10 +182,9 @@ Ensure the interview remains focused on ${jobPosition}.
     };
 
     try {
-      // setSeconds(0);
       setInterviewStarted(true);
       await vapiRef.current.start(assistantOptions);
-      toast("Call Connected...");
+      toast.success("Call connected...");
     } catch (error) {
       console.error("Error starting call:", error);
       setInterviewStarted(false);
@@ -234,9 +223,40 @@ Ensure the interview remains focused on ${jobPosition}.
     const vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_API_KEY);
     vapiRef.current = vapi;
 
-    const handleMessage = (message) => {
+    const handleMessage = async (message) => {
+      console.log("Vapi message:", message);
+
       if (message?.conversation) {
-        conversationRef.current = JSON.stringify(message.conversation);
+        conversationRef.current = message.conversation;
+      }
+
+      const text =
+        message?.transcript ||
+        message?.text ||
+        message?.content ||
+        message?.message ||
+        "";
+
+      if (
+        typeof text === "string" &&
+        text.toLowerCase().includes("the interview is now complete")
+      ) {
+        console.log("Completion phrase detected. Stopping call...");
+        if (endingRef.current) return;
+
+        endingRef.current = true;
+        setInterviewStarted(false);
+
+        try {
+          await vapiRef.current?.stop?.();
+        } catch (error) {
+          console.error("Auto-stop error:", error);
+
+          if (!feedbackSavedRef.current) {
+            feedbackSavedRef.current = true;
+            await generateFeedback(conversationRef.current);
+          }
+        }
       }
     };
 
@@ -249,9 +269,11 @@ Ensure the interview remains focused on ${jobPosition}.
     };
 
     const handleCallEnd = async () => {
+      console.log("Vapi call ended");
       setInterviewStarted(false);
 
-      if (manualStopRef.current || endingRef.current) return;
+      if (manualStopRef.current) return;
+
       if (feedbackSavedRef.current) return;
 
       feedbackSavedRef.current = true;
@@ -280,7 +302,7 @@ Ensure the interview remains focused on ${jobPosition}.
 
       vapiRef.current = null;
     };
-  }, []);
+  }, [id, interviewInfo]);
 
   useEffect(() => {
     if (interviewInfo && vapiRef.current && !callStartedRef.current) {
@@ -301,10 +323,6 @@ Ensure the interview remains focused on ${jobPosition}.
     <div className="p-20 lg:px-48 xl:px-56">
       <h2 className="flex justify-between text-xl font-bold">
         AI Interview Session
-        {/* <span className="flex items-center gap-2">
-          <Timer />
-          {formatTime(seconds)}
-        </span> */}
         <InterviewTimer isRunning={interviewStarted} />
       </h2>
 
