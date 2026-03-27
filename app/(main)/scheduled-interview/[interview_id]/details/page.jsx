@@ -1,5 +1,4 @@
 "use client";
-
 import { useUser } from "@/app/provider";
 import { supabase } from "@/services/supabaseClient";
 import { useParams } from "next/navigation";
@@ -49,13 +48,16 @@ const InterviewDetail = () => {
       .eq("interview_id", interview_id)
       .maybeSingle();
 
-    console.log("SELECT ERROR:", error);
-    console.log("DATA:", data);
-
     if (error) {
       setInterviewDetail(null);
     } else {
-      setInterviewDetail(data);
+      // ✅ Deduplicate feedback by userEmail
+      const feedback = data?.["interview-feedback"] || [];
+      const uniqueFeedback = feedback.filter(
+        (item, index, self) =>
+          index === self.findIndex((t) => t.userEmail === item.userEmail)
+      );
+      setInterviewDetail({ ...data, "interview-feedback": uniqueFeedback });
     }
 
     setLoading(false);
@@ -68,7 +70,10 @@ const InterviewDetail = () => {
         interviewDetail={interviewDetail}
         loading={loading}
       />
-      <CandidateList CandidateList={interviewDetail?.['interview-feedback']} />
+      {/* ✅ Fixed prop name: candidateList not CandidateList */}
+      <CandidateList
+        candidateList={interviewDetail?.["interview-feedback"] || []}
+      />
     </div>
   );
 };

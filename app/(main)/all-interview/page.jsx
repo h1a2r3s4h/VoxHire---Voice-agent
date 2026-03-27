@@ -19,14 +19,7 @@ const AllInterview = () => {
   const GetInterviewList = async () => {
     const { data, error } = await supabase
       .from("Interviews")
-      .select(`
-        *,
-        interview_feedback:interview-feedback (
-          userEmail,
-          feedback,
-          recommended
-        )
-      `)
+      .select("*")
       .eq("userEmail", user?.email)
       .order("id", { ascending: false });
 
@@ -35,8 +28,13 @@ const AllInterview = () => {
       return;
     }
 
-    console.log("Interview List:", data);
-    setInterviewList(data || []);
+    // ✅ Remove duplicate interviews by interview_id
+    const unique = data?.filter(
+      (item, index, self) =>
+        index === self.findIndex((t) => t.interview_id === item.interview_id)
+    );
+
+    setInterviewList(unique || []);
   };
 
   return (

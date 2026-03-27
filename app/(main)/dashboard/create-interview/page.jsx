@@ -1,51 +1,85 @@
-"use client"
-import { Progress } from '@/components/ui/progress';
-import { ArrowLeft } from 'lucide-react'
-import { useRouter } from 'next/navigation';
+"use client";
 
-import React, { useState } from 'react'
-import FormContainer from './_components/FormContainer';
-import QuestionList from './_components/QuestionList';
-import { toast } from 'sonner';
-import InterviewLink from './_components/InterviewLink';
+import { Progress } from "@/components/ui/progress";
+import { ArrowLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
+import FormContainer from "./_components/FormContainer";
+import QuestionList from "./_components/QuestionList";
+import { toast } from "sonner";
+import InterviewLink from "./_components/InterviewLink";
 
 const CreateInterview = () => {
-    const router = useRouter();
-    const [step, setStep] = useState(1);
-    const[formData, setFormData] = useState();
-    const [interviewId, setInterviewId] = useState()
-    const onHandleInputChange = (field, value)=>{
-        setFormData(prev=>({
-            ...prev,
-            [field]:value
-        }))
+  const router = useRouter();
+  const [step, setStep] = useState(1);
+  const [formData, setFormData] = useState({});
+  const [interviewId, setInterviewId] = useState();
 
-        console.log("FormData", formData)
+  const onHandleInputChange = (field, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const onGoToNext = () => {
+    const hasResume = !!formData?.resumeFile;
+    const hasJobDescription = !!formData?.jobDescription?.trim();
+    const hasInterviewType =
+      Array.isArray(formData?.type) && formData.type.length > 0;
+
+    if (!formData?.jobPosition?.trim()) {
+      toast("Please enter job position");
+      return;
     }
 
-    const onGoToNext=()=>{
-        if(!formData?.jobPosition || !formData?.jobDescription || !formData?.duration || !formData.type){
-            toast('Please enter all details')
-            return;
-        }
-        setStep(step+1);
+    if (!hasResume && !hasJobDescription) {
+      toast("Please upload a resume, add a job description, or use both");
+      return;
     }
 
-    const onCreateLink=(interview_id)=>{
-        setInterviewId(interview_id);
-        setStep(step+1);
-
+    if (!formData?.duration) {
+      toast("Please select interview duration");
+      return;
     }
+
+    if (!hasInterviewType) {
+      toast("Please select at least one interview type");
+      return;
+    }
+
+    setStep(2);
+  };
+
+  const onCreateLink = (interview_id) => {
+    setInterviewId(interview_id);
+    setStep(3);
+  };
+
   return (
-    <div className='mt-10 px-10 md:px-24 lg:px-44 xl:px-56'>
-        <div className='flex gap-5 items-center'>
-            <ArrowLeft onClick={()=>router.back()} className='cursor-pointer'/>
-            <h2 className='font-bold text-2xl'>Create New Interview</h2>
-        </div>
-         <Progress value={step * 33.33} className="my-5"/>
-         {step == 1 ? <FormContainer onHandleInputChange= {onHandleInputChange} GoToNext={()=>onGoToNext()} /> : step == 2 ? <QuestionList formData = {formData} onCreateLink={(interview_id)=>onCreateLink(interview_id)}/>:step==3?<InterviewLink interview_id={interviewId} formData={formData}/>:null}
-    </div>
-  )
-}
+    <div className="mt-10 px-10 md:px-24 lg:px-44 xl:px-56">
+      <div className="flex gap-5 items-center">
+        <ArrowLeft onClick={() => router.back()} className="cursor-pointer" />
+        <h2 className="font-bold text-2xl">Create New Interview</h2>
+      </div>
 
-export default CreateInterview 
+      <Progress value={step * 33.33} className="my-5" />
+
+      {step === 1 ? (
+        <FormContainer
+          onHandleInputChange={onHandleInputChange}
+          GoToNext={onGoToNext}
+        />
+      ) : step === 2 ? (
+        <QuestionList
+          formData={formData}
+          onCreateLink={(interview_id) => onCreateLink(interview_id)}
+        />
+      ) : step === 3 ? (
+        <InterviewLink interview_id={interviewId} formData={formData} />
+      ) : null}
+    </div>
+  );
+};
+
+export default CreateInterview;
