@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: "standalone",
+
   experimental: {
     turbo: {
       resolveAlias: {
@@ -8,6 +10,7 @@ const nextConfig = {
       },
     },
   },
+
   images: {
     remotePatterns: [
       {
@@ -16,6 +19,7 @@ const nextConfig = {
       },
     ],
   },
+
   webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,
@@ -25,4 +29,5 @@ const nextConfig = {
     return config;
   },
 };
+
 export default nextConfig;
