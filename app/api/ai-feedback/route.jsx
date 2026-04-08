@@ -6,6 +6,13 @@ export async function POST(req) {
   try {
     const { conversation } = await req.json();
 
+    if (!process.env.OPENROUTER_API_KEY) {
+      return NextResponse.json(
+        { error: "Missing OPENROUTER_API_KEY" },
+        { status: 500 }
+      );
+    }
+
     const FINAL_PROMPT = FEEDBACK_PROMPT.replace(
       "{{conversation}}",
       JSON.stringify(conversation)
@@ -19,6 +26,10 @@ export async function POST(req) {
     const completion = await openai.chat.completions.create({
       model: "google/gemini-2.0-flash-001",
       messages: [{ role: "user", content: FINAL_PROMPT }],
+      extra_headers: {
+        "HTTP-Referer": "http://localhost:3000",
+        "X-Title": "VOX HIRE",
+      },
     });
 
     return NextResponse.json({
@@ -26,6 +37,14 @@ export async function POST(req) {
     });
   } catch (e) {
     console.error("AI feedback route error:", e);
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+
+    return NextResponse.json(
+      {
+        error: e?.message || "Server error",
+        status: e?.status || 500,
+        details: e?.error || null,
+      },
+      { status: e?.status || 500 }
+    );
   }
 }
