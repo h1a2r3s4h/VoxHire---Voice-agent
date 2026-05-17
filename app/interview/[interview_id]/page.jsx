@@ -100,15 +100,20 @@ const Interview = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-md p-8 flex flex-col items-center text-center space-y-6">
+    <div className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden px-4">
+      {/* Background Glows */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/20 via-background to-background" />
+      <div className="absolute -left-32 top-1/4 h-96 w-96 rounded-full bg-blue-600/10 blur-[120px]" />
+      <div className="absolute -right-32 bottom-1/4 h-96 w-96 rounded-full bg-indigo-600/10 blur-[120px]" />
+
+      <div className="w-full max-w-md bg-card/50 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-[0_0_50px_rgba(37,99,235,0.1)] p-8 flex flex-col items-center text-center space-y-6 relative z-10">
         <div className="flex items-center gap-2 text-3xl font-extrabold tracking-tight">
-          <Mic className="h-7 w-7 text-blue-600" />
-          <span className="text-blue-600">Vox</span>
-          <span className="text-gray-900">Hire</span>
+          <Mic className="h-7 w-7 text-blue-500" />
+          <span className="bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">Vox</span>
+          <span className="text-foreground">Hire</span>
         </div>
 
-        <p className="text-gray-500 text-sm">AI-Powered Interview Platform</p>
+        <p className="text-muted-foreground text-sm font-medium">AI-Powered Assessment Platform</p>
 
         <Image
           src="/interview.png"
@@ -119,17 +124,17 @@ const Interview = () => {
           className="object-contain"
         />
 
-        <h2 className="text-xl font-semibold text-gray-900">
+        <h2 className="text-xl font-semibold text-foreground">
           {interview?.jobPosition || "Loading..."} Interview
         </h2>
 
-        <div className="flex items-center gap-2 text-gray-500 text-sm">
+        <div className="flex items-center gap-2 text-muted-foreground text-sm">
           <Clock className="w-4 h-4" />
           <span>{interview?.duration || 0} Minutes</span>
         </div>
 
         <div className="w-full text-left space-y-2">
-          <label htmlFor="fullname" className="text-sm font-medium text-gray-700">
+          <label htmlFor="fullname" className="text-sm font-medium text-muted-foreground">
             Enter your full name
           </label>
           <Input
@@ -138,12 +143,12 @@ const Interview = () => {
             placeholder="e.g. John Smith"
             value={userName}
             onChange={(e) => setUserName(e.target.value)}
-            className="w-full"
+            className="w-full bg-background/50 border-white/10 focus-visible:ring-blue-500/50 transition-all"
           />
         </div>
 
         <div className="w-full text-left space-y-2">
-          <label htmlFor="email" className="text-sm font-medium text-gray-700">
+          <label htmlFor="email" className="text-sm font-medium text-muted-foreground">
             Enter your email
           </label>
           <Input
@@ -152,28 +157,28 @@ const Interview = () => {
             placeholder="e.g. johnsmith@example.com"
             value={userEmail}
             onChange={(e) => setUserEmail(e.target.value)}
-            className="w-full"
+            className="w-full bg-background/50 border-white/10 focus-visible:ring-blue-500/50 transition-all"
           />
         </div>
 
-        <div className="w-full bg-blue-100 rounded-xl p-4 text-left">
+        <div className="w-full bg-blue-900/10 border border-blue-500/20 rounded-xl p-4 text-left shadow-inner">
           <div className="flex gap-3">
-            <Info className="w-5 h-5 text-blue-600 mt-1 shrink-0" />
+            <Info className="w-5 h-5 text-blue-400 mt-1 shrink-0" />
             <div>
-              <p className="font-semibold text-gray-800 text-sm mb-2">
+              <p className="font-bold text-blue-100 text-sm mb-2">
                 Before you begin
               </p>
-              <ul className="text-blue-700 text-sm space-y-1">
-                <li>- Test your camera and microphone</li>
-                <li>- Ensure you have a stable internet connection</li>
-                <li>- Find a quiet place for interview</li>
+              <ul className="text-blue-300/80 text-sm space-y-1.5 font-medium">
+                <li>• Test your camera and microphone</li>
+                <li>• Ensure you have a stable internet connection</li>
+                <li>• Find a quiet place for interview</li>
               </ul>
             </div>
           </div>
         </div>
 
         <Button
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 flex items-center justify-center gap-2"
+          className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-6 text-lg rounded-xl shadow-[0_0_20px_rgba(37,99,235,0.4)] transition-all hover:scale-[1.02] flex items-center justify-center gap-2 disabled:opacity-50 disabled:hover:scale-100 disabled:shadow-none"
           disabled={loading || !userName.trim() || !userEmail.trim()}
           onClick={onJoinInterview}
         >

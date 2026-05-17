@@ -23,6 +23,7 @@ const StartInterview = () => {
   const vapiRef = useRef(null);
   const callStartedRef = useRef(false);
   const conversationRef = useRef(null);
+  const manualConversationRef = useRef([]);
   const feedbackSavedRef = useRef(false);
   const manualStopRef = useRef(false);
   const endingRef = useRef(false);
@@ -90,9 +91,17 @@ const StartInterview = () => {
         parsedFeedback = JSON.parse(finalContent);
       } catch (parseError) {
         console.error("JSON parse error:", parseError, finalContent);
-        toast.error("Invalid feedback JSON received.");
-        hardRedirectToCompleted();
-        return;
+        toast.error("Interview ended very early. Generating partial evaluation.");
+        
+        // Fallback save so we don't lose the record and still show a report
+        parsedFeedback = {
+          feedback: {
+            rating: { technicalSkills: 0, communication: 0, problemSolving: 0, experience: 0 },
+            summery: "The interview was manually ended early. There was not enough conversation data for the AI to provide a comprehensive evaluation.",
+            Recommendation: false,
+            RecommendationMsg: "Please ask the candidate to complete a full interview."
+          }
+        };
       }
 
       const isRecommended =
@@ -200,6 +209,13 @@ Keep the conversation professional, concise, and focused on ${jobPosition}.
     feedbackSavedRef.current = true;
     setInterviewStarted(false);
 
+    // Capture the conversation BEFORE stopping the call
+    // Prefer our manual transcript accumulator as it is updated in real-time
+    const finalConversation = 
+      manualConversationRef.current && manualConversationRef.current.length > 0 
+        ? manualConversationRef.current 
+        : conversationRef.current;
+
     try {
       if (vapiRef.current) {
         await vapiRef.current.stop?.();
@@ -209,7 +225,14 @@ Keep the conversation professional, concise, and focused on ${jobPosition}.
         interview_id: id,
       });
 
-      await saveCancelledInterview();
+      if (finalConversation && finalConversation.length > 0) {
+        toast.success("Generating feedback for partial interview...");
+        await generateFeedback(finalConversation);
+      } else {
+        toast.error("Generating empty feedback report...");
+        // Instead of saveCancelledInterview(), generate an empty fallback to show report
+        await generateFeedback([{ role: "system", content: "Interview ended before conversation started." }]);
+      }
     } catch (error) {
       console.error("Error stopping interview:", error);
     } finally {
@@ -228,6 +251,14 @@ Keep the conversation professional, concise, and focused on ${jobPosition}.
 
       if (message?.conversation) {
         conversationRef.current = message.conversation;
+      }
+
+      // Manually accumulate final transcripts to ensure we don't miss anything if the user stops early
+      if (message?.type === "transcript" && message?.transcriptType === "final") {
+        manualConversationRef.current.push({
+          role: message.role || "user",
+          content: message.transcript,
+        });
       }
 
       const text =
@@ -277,7 +308,11 @@ Keep the conversation professional, concise, and focused on ${jobPosition}.
       if (feedbackSavedRef.current) return;
 
       feedbackSavedRef.current = true;
-      await generateFeedback(conversationRef.current);
+      const finalConv = 
+        manualConversationRef.current && manualConversationRef.current.length > 0 
+          ? manualConversationRef.current 
+          : conversationRef.current;
+      await generateFeedback(finalConv);
     };
 
     vapi.on("message", handleMessage);
@@ -313,37 +348,39 @@ Keep the conversation professional, concise, and focused on ${jobPosition}.
 
   if (!interviewInfo) {
     return (
-      <div className="p-20 text-center text-gray-500">
+      <div className="p-20 text-center text-muted-foreground">
         Interview data not found.
       </div>
     );
   }
 
   return (
-    <div className="p-20 lg:px-48 xl:px-56">
-      <h2 className="flex justify-between text-xl font-bold">
-        AI Interview Session
+    <div className="min-h-screen p-20 lg:px-48 xl:px-56 bg-background relative overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/10 via-background to-background" />
+
+      <h2 className="relative z-10 flex justify-between text-2xl font-extrabold bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">
+        Live Interview Session
         <InterviewTimer isRunning={interviewStarted} />
       </h2>
 
-      <div className="mt-6 grid grid-cols-1 gap-7 md:grid-cols-2">
+      <div className="relative z-10 mt-10 grid grid-cols-1 gap-8 md:grid-cols-2">
         <div
-          className={`flex flex-col items-center justify-center gap-3 rounded-lg border bg-white p-20 transition-all duration-300 ${
+          className={`flex flex-col items-center justify-center gap-4 rounded-3xl border p-20 transition-all duration-500 backdrop-blur-2xl ${
             !activeUser
-              ? "border-2 border-blue-400 shadow-lg shadow-blue-100"
-              : "border-gray-200"
+              ? "border-blue-500/50 shadow-[0_0_40px_rgba(37,99,235,0.15)] bg-blue-900/20 scale-[1.02]"
+              : "border-white/5 bg-card/50 scale-100"
           }`}
         >
           <div className="relative flex items-center justify-center">
             {!activeUser && (
               <>
-                <span className="absolute inline-flex h-20 w-20 animate-ping rounded-full bg-blue-400 opacity-20" />
-                <span className="delay-75 absolute inline-flex h-16 w-16 animate-ping rounded-full bg-blue-400 opacity-10" />
+                <span className="absolute inline-flex h-24 w-24 animate-ping rounded-full bg-blue-500 opacity-20" />
+                <span className="delay-75 absolute inline-flex h-20 w-20 animate-ping rounded-full bg-blue-400 opacity-30" />
               </>
             )}
-            <Bot className="relative z-10 h-16 w-16 text-blue-600" />
+            <Bot className={`relative z-10 h-16 w-16 transition-colors duration-300 ${!activeUser ? "text-blue-400 drop-shadow-[0_0_15px_rgba(96,165,250,0.8)]" : "text-muted-foreground"}`} />
           </div>
-          <p className="font-medium text-gray-600">AI Interviewer</p>
+          <p className={`font-bold text-lg mt-2 transition-colors ${!activeUser ? "text-blue-100" : "text-muted-foreground"}`}>AI Interviewer</p>
           {!activeUser && (
             <span className="animate-pulse text-xs font-medium text-blue-400">
               ● Speaking...
@@ -352,22 +389,22 @@ Keep the conversation professional, concise, and focused on ${jobPosition}.
         </div>
 
         <div
-          className={`flex flex-col items-center justify-center gap-3 rounded-lg border bg-white p-20 transition-all duration-300 ${
+          className={`flex flex-col items-center justify-center gap-4 rounded-3xl border p-20 transition-all duration-500 backdrop-blur-2xl ${
             activeUser
-              ? "border-2 border-green-400 shadow-lg shadow-green-100"
-              : "border-gray-200"
+              ? "border-emerald-500/50 shadow-[0_0_40px_rgba(16,185,129,0.15)] bg-emerald-900/20 scale-[1.02]"
+              : "border-white/5 bg-card/50 scale-100"
           }`}
         >
           <div className="relative flex items-center justify-center">
             {activeUser && (
               <>
-                <span className="absolute inline-flex h-20 w-20 animate-ping rounded-full bg-green-400 opacity-20" />
-                <span className="delay-75 absolute inline-flex h-16 w-16 animate-ping rounded-full bg-green-400 opacity-10" />
+                <span className="absolute inline-flex h-24 w-24 animate-ping rounded-full bg-emerald-500 opacity-20" />
+                <span className="delay-75 absolute inline-flex h-20 w-20 animate-ping rounded-full bg-emerald-400 opacity-30" />
               </>
             )}
-            <User className="relative z-10 h-16 w-16 text-green-600" />
+            <User className={`relative z-10 h-16 w-16 transition-colors duration-300 ${activeUser ? "text-emerald-400 drop-shadow-[0_0_15px_rgba(52,211,153,0.8)]" : "text-muted-foreground"}`} />
           </div>
-          <p className="font-medium text-gray-600">
+          <p className={`font-bold text-lg mt-2 transition-colors ${activeUser ? "text-emerald-100" : "text-muted-foreground"}`}>
             {interviewInfo?.userName || "Candidate"}
           </p>
           {activeUser && (
@@ -378,25 +415,25 @@ Keep the conversation professional, concise, and focused on ${jobPosition}.
         </div>
       </div>
 
-      <div className="mt-10 flex justify-center gap-6">
+      <div className="relative z-10 mt-12 flex justify-center gap-8">
         <button
           type="button"
-          className="rounded-full bg-gray-100 p-4 shadow transition hover:bg-gray-200"
+          className="rounded-full bg-white/5 border border-white/10 p-5 shadow-lg transition-all hover:bg-white/10 hover:scale-110"
         >
-          <Mic className="h-6 w-6 cursor-pointer text-gray-700" />
+          <Mic className="h-6 w-6 cursor-pointer text-white" />
         </button>
 
         <AlertConfirmation stopInterview={stopInterview}>
           <button
             type="button"
-            className="rounded-full bg-red-500 p-4 shadow transition hover:bg-red-600"
+            className="rounded-full bg-red-600 p-5 shadow-[0_0_20px_rgba(220,38,38,0.5)] transition-all hover:bg-red-500 hover:scale-110"
           >
-            <Phone className="h-6 w-6 rotate-[135deg] cursor-pointer text-white" />
+            <Phone className="h-6 w-6 rotate-[135deg] cursor-pointer text-white drop-shadow-md" />
           </button>
         </AlertConfirmation>
       </div>
 
-      <p className="mt-5 text-center text-sm text-gray-400">
+      <p className="relative z-10 mt-8 text-center text-sm font-medium text-blue-400 animate-pulse tracking-wide">
         Interview in Progress...
       </p>
     </div>

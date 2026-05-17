@@ -28,12 +28,12 @@ const WelcomeContainer = () => {
   }, []);
 
   return (
-    <div className="bg-white p-3 rounded-2xl flex justify-between items-center">
+    <div className="bg-card p-3 rounded-2xl flex justify-between items-center">
       <div>
         <h2 className="text-lg font-bold">
           Welcome Back, {user?.name || "User"}
         </h2>
-        <h2 className="text-gray-500">
+        <h2 className="text-muted-foreground">
           AI-Driven Interviews, Hassle-Free Hiring
         </h2>
       </div>

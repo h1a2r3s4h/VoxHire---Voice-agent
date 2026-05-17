@@ -83,13 +83,13 @@ Recruitment Team`;
   const ScoreBar = ({ label, value }) => (
     <div className="w-full">
       <div className="flex items-center justify-between mb-2">
-        <h2 className="text-base font-medium text-gray-700">{label}</h2>
-        <span className="text-base font-medium text-gray-700">{value}/10</span>
+        <h2 className="text-base font-medium text-muted-foreground">{label}</h2>
+        <span className="text-base font-medium text-muted-foreground">{value}/10</span>
       </div>
 
-      <div className="w-full h-3 bg-blue-100 rounded-full overflow-hidden">
+      <div className="w-full h-3 bg-white/5 border border-white/10 rounded-full overflow-hidden">
         <div
-          className="h-3 bg-blue-500 rounded-full"
+          className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full shadow-[0_0_10px_rgba(59,130,246,0.5)]"
           style={{ width: getWidth(value) }}
         />
       </div>
@@ -99,30 +99,30 @@ Recruitment Team`;
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" className="text-primary">
+        <Button variant="outline" className="border-white/10 text-blue-400 hover:bg-white/5 hover:text-blue-300 transition-colors">
           View Report
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="max-w-4xl rounded-2xl p-0 overflow-hidden">
-        <DialogHeader className="p-6 pb-2">
-          <DialogTitle className="text-3xl font-bold text-black">
-            Feedback
+      <DialogContent className="max-w-4xl rounded-2xl p-0 overflow-hidden border-white/10 bg-card shadow-2xl shadow-black/50">
+        <DialogHeader className="p-8 pb-4">
+          <DialogTitle className="text-3xl font-extrabold bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">
+            Feedback Report
           </DialogTitle>
 
           <DialogDescription asChild>
-            <div className="mt-6">
+            <div className="mt-8">
               <div className="flex items-start justify-between gap-4">
-                <div className="flex items-center gap-4">
-                  <div className="h-16 w-16 rounded-full bg-blue-500 flex items-center justify-center text-white text-2xl font-bold uppercase">
+                <div className="flex items-center gap-5">
+                  <div className="h-16 w-16 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white text-2xl font-bold uppercase shadow-[0_0_15px_rgba(37,99,235,0.4)]">
                     {candidate?.userName?.charAt(0) || "U"}
                   </div>
 
                   <div>
-                    <h2 className="text-2xl font-semibold text-gray-800">
+                    <h2 className="text-2xl font-semibold text-foreground">
                       {candidate?.userName || "No Name"}
                     </h2>
-                    <p className="text-lg text-gray-500">
+                    <p className="text-lg text-muted-foreground">
                       {candidate?.userEmail || "No Email"}
                     </p>
                   </div>
@@ -136,13 +136,13 @@ Recruitment Team`;
           </DialogDescription>
         </DialogHeader>
 
-        <div className="px-6 pb-6">
+        <div className="px-8 pb-8">
           {!hasCompletedFeedback ? (
-            <div className="mt-8 bg-yellow-50 border border-yellow-200 rounded-2xl p-6">
-              <h2 className="text-2xl font-bold text-yellow-700 mb-3">
+            <div className="mt-8 bg-yellow-500/10 border border-yellow-500/20 rounded-2xl p-6 shadow-lg shadow-black/20">
+              <h2 className="text-2xl font-bold text-yellow-400 mb-3">
                 Interview Incomplete
               </h2>
-              <p className="text-lg text-yellow-700 leading-8">
+              <p className="text-lg text-yellow-200/80 leading-8">
                 This candidate did not complete the full interview, so detailed
                 feedback, ratings, summary, and recommendation are not available.
               </p>
@@ -150,7 +150,7 @@ Recruitment Team`;
           ) : (
             <>
               <div className="mt-6">
-                <h2 className="text-2xl font-bold text-gray-700 mb-6">
+                <h2 className="text-2xl font-bold text-muted-foreground mb-6">
                   Skills Assessment
                 </h2>
 
@@ -162,23 +162,23 @@ Recruitment Team`;
                 </div>
               </div>
 
-              <div className="mt-8">
-                <h2 className="text-2xl font-bold text-gray-700 mb-4">
+              <div className="mt-10">
+                <h2 className="text-2xl font-bold text-foreground mb-4">
                   Performance Summary
                 </h2>
 
-                <div className="bg-gray-100 rounded-2xl p-6 text-gray-600 text-lg leading-9">
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-6 text-muted-foreground text-lg leading-9 shadow-inner">
                   {feedbackData?.summery || "No summary available"}
                 </div>
               </div>
 
               <div className="mt-8">
-                <div className="bg-red-50 rounded-2xl p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div className="bg-red-500/10 border border-red-500/20 rounded-2xl p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4 shadow-lg shadow-black/20">
                   <div>
-                    <h2 className="text-2xl font-bold text-red-700">
+                    <h2 className="text-2xl font-bold text-red-400">
                       Recommendation Msg:
                     </h2>
-                    <p className="text-red-600 text-lg mt-2 leading-8">
+                    <p className="text-red-300/80 text-lg mt-2 leading-8">
                       {feedbackData?.RecommendationMsg ||
                         "No recommendation message available"}
                     </p>
@@ -186,9 +186,9 @@ Recruitment Team`;
 
                   <Button
                     onClick={handleSendMsg}
-                    className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl"
+                    className="bg-red-600 hover:bg-red-500 text-white px-8 py-4 rounded-xl shadow-[0_0_15px_rgba(220,38,38,0.4)] transition-all hover:scale-[1.02] font-bold"
                   >
-                    Send Msg
+                    Send Message
                   </Button>
                 </div>
               </div>

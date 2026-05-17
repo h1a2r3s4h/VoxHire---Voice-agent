@@ -60,7 +60,7 @@ const CreateInterview = () => {
     <div className="mt-10 px-10 md:px-24 lg:px-44 xl:px-56">
       <div className="flex gap-5 items-center">
         <ArrowLeft onClick={() => router.back()} className="cursor-pointer" />
-        <h2 className="font-bold text-2xl">Create New Interview</h2>
+        <h2 className="font-bold text-3xl bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">Create New Interview</h2>
       </div>
 
       <Progress value={step * 33.33} className="my-5" />

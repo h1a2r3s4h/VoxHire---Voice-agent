@@ -36,10 +36,10 @@ const LatestInterviewsList = () => {
 
   return (
     <div className="my-5">
-      <h2 className="font-bold text-2xl">Previously Created Interview</h2>
+      <h2 className="font-bold text-2xl bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">Previously Created Interview</h2>
 
       {interviewList?.length == 0 && (
-        <div className="p-5 flex flex-col gap-3 items-center bg-white mt-5">
+        <div className="p-5 flex flex-col gap-3 items-center bg-card mt-5">
           <Video className="h-10 w-10 text-primary" />
           <h2>You don't have any interview created!</h2>
           <Button>+ Create New Interview</Button>

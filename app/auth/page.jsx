@@ -19,12 +19,12 @@ const Login = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
-      <div className="w-full max-w-md rounded-2xl border bg-white p-8 shadow-sm">
+    <div className="flex min-h-screen items-center justify-center bg-muted px-4">
+      <div className="w-full max-w-md rounded-2xl border bg-card p-8 shadow-sm shadow-black/50">
         <div className="flex flex-col items-center">
           <h1 className="text-4xl font-extrabold tracking-tight">
             <span className="text-blue-500">Vox</span>
-            <span className="text-black">Hire</span>
+            <span className="text-foreground">Hire</span>
           </h1>
 
           <div className="mt-6">
@@ -42,13 +42,13 @@ const Login = () => {
             Welcome to AIcruiter
           </h2>
 
-          <p className="mt-2 text-center text-gray-500">
+          <p className="mt-2 text-center text-muted-foreground">
             Sign in with Google to continue
           </p>
 
           <button
             onClick={signInWithGoogle}
-            className="mt-7 flex w-full items-center justify-center gap-3 rounded-xl border bg-white py-3 font-semibold text-gray-800 transition hover:bg-gray-50"
+            className="mt-7 flex w-full items-center justify-center gap-3 rounded-xl border bg-card py-3 font-semibold text-foreground transition hover:bg-muted"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

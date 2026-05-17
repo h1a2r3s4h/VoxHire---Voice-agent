@@ -42,22 +42,24 @@ function InterviewCard({ interview, viewDetail = false }) {
   };
 
   return (
-    <div className="p-5 bg-white rounded-xl border">
+    <div className="p-6 bg-card rounded-2xl border border-white/5 shadow-black/50 hover:shadow-[0_0_20px_rgba(37,99,235,0.15)] transition-all hover:-translate-y-1">
       <div className="flex items-center justify-between">
-        <div className="h-10 w-10 bg-primary rounded-full"></div>
+        <div className="h-12 w-12 bg-gradient-to-tr from-blue-600 to-indigo-500 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-[0_0_10px_rgba(37,99,235,0.3)]">
+          {interview?.jobPosition?.[0] || "I"}
+        </div>
 
-        <h2 className="text-sm text-gray-500">
+        <h2 className="text-sm text-muted-foreground">
           {interview?.created_at
             ? moment(interview.created_at).format("DD MMM YYYY")
             : "No date"}
         </h2>
       </div>
 
-      <h2 className="mt-4 font-bold text-lg">{interview?.jobPosition}</h2>
+      <h2 className="mt-5 font-extrabold text-xl text-foreground">{interview?.jobPosition}</h2>
 
-      <h2 className="mt-2 text-gray-500 flex justify-between">
-        <span>{interview?.duration} Min</span>
-        <span className="text-green-700">{candidateCount} Candidates</span>
+      <h2 className="mt-3 text-muted-foreground flex justify-between items-center text-sm">
+        <span className="bg-white/5 px-3 py-1 rounded-full">{interview?.duration} Min</span>
+        <span className="text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full font-medium">{candidateCount} Candidates</span>
       </h2>
 
       {!viewDetail ? (
@@ -83,9 +85,9 @@ function InterviewCard({ interview, viewDetail = false }) {
       ) : (
         <Link
           href={`/scheduled-interview/${interview?.interview_id}/details`}
-          className="block mt-5"
+          className="block mt-6"
         >
-          <Button className="w-full" variant="outline">
+          <Button className="w-full bg-blue-600/10 text-blue-400 hover:bg-blue-600/20 border-0 transition-colors" variant="outline">
             View Detail <ArrowRight className="ml-2 w-4 h-4" />
           </Button>
         </Link>

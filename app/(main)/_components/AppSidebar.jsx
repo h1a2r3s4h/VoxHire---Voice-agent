@@ -30,7 +30,7 @@ export function AppSidebar() {
 
     <h1 className="text-2xl font-extrabold tracking-tight">
       <span className="text-blue-500">Vox</span>
-      <span className="text-black">Hire</span>
+      <span className="text-foreground">Hire</span>
     </h1>
 
   </div>
@@ -42,25 +42,34 @@ export function AppSidebar() {
       <SidebarContent>
         <SidebarGroup>
           <SidebarMenu>
-            {SideBarOptions.map((option, index) => (
-              <SidebarMenuItem key={index} className="p-1">
-                <SidebarMenuButton
-                  asChild
-                  className={`p-5 ${path == option.path && "bg-blue-50"}`}
-                >
-                  <Link href={option.path} className="flex items-center gap-2">
-                    <option.icon
-                      className={`${path == option.path && "text-primary"}`}
-                    />
-                    <span
-                      className={`text-[16px] font-medium ${path == option.path && "text-primary"}`}
-                    >
-                      {option.name}
-                    </span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
+            {SideBarOptions.map((option, index) => {
+              const isActive = path === option.path;
+              return (
+                <SidebarMenuItem key={index} className="p-1">
+                  <SidebarMenuButton
+                    asChild
+                    className={`p-5 cursor-pointer transition-all duration-200 ${
+                      isActive 
+                        ? "bg-gradient-to-r from-blue-600/20 to-transparent border-r-2 border-blue-500 text-blue-400" 
+                        : "hover:bg-white/5"
+                    }`}
+                  >
+                    <Link href={option.path} className="flex items-center gap-3">
+                      <option.icon
+                        className={`h-5 w-5 ${isActive ? "text-blue-400" : "text-muted-foreground"}`}
+                      />
+                      <span
+                        className={`text-[15px] font-medium ${
+                          isActive ? "text-blue-400" : "text-muted-foreground"
+                        }`}
+                      >
+                        {option.name}
+                      </span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              );
+            })}
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>

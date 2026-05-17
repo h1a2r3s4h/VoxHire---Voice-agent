@@ -8,12 +8,12 @@ const QuestionListContainer = ({ questionList }) => {
       {questionList.map((q, index) => (
         <div
           key={index}
-          className="p-4 border rounded-lg bg-white shadow-sm"
+          className="p-4 border rounded-lg bg-card shadow-sm shadow-black/50"
         >
           <h3 className="font-semibold">
             {index + 1}. {q.question}
           </h3>
-          <p className="text-sm text-gray-500 mt-1">Type: {q.type}</p>
+          <p className="text-sm text-muted-foreground mt-1">Type: {q.type}</p>
         </div>
       ))}
     </div>

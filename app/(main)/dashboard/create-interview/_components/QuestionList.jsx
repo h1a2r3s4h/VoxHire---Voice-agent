@@ -43,9 +43,16 @@ const QuestionList = ({ formData, onCreateLink }) => {
         setResumeText(extractedResumeText);
       }
 
-      const source = extractedResumeText
-        ? "resume_only"
-        : "job_description_only";
+      const hasJobDesc = !!formData?.jobDescription?.trim();
+      
+      let source = "";
+      if (extractedResumeText && hasJobDesc) {
+        source = "both";
+      } else if (extractedResumeText) {
+        source = "resume_only";
+      } else {
+        source = "job_description_only";
+      }
 
       setInputSource(source);
 
@@ -129,22 +136,26 @@ const QuestionList = ({ formData, onCreateLink }) => {
   return (
     <div>
       {loading && (
-        <div className="p-5 bg-blue-50 rounded-xl border border-primary gap-5 flex items-center">
-          <Loader2Icon className="animate-spin" />
+        <div className="p-8 bg-blue-900/10 rounded-2xl border border-blue-500/20 shadow-[0_0_20px_rgba(37,99,235,0.15)] gap-5 flex items-center">
+          <Loader2Icon className="animate-spin text-blue-400 h-8 w-8" />
           <div>
-            <h2 className="font-medium">Generating Interview Questions</h2>
-            <p className="text-primary">Our AI is crafting personalized questions</p>
+            <h2 className="font-bold text-lg text-blue-100">Generating Interview Questions</h2>
+            <p className="text-blue-400/80 mt-1">Our AI is crafting personalized questions based on your requirements...</p>
           </div>
         </div>
       )}
 
       {!loading && questionList.length > 0 && (
         <div className="mt-5 space-y-3">
-          <div className="rounded-xl border bg-white p-3 text-sm">
-            <span className="font-semibold">Source:</span>{" "}
-            {inputSource === "resume_only"
-              ? "Resume Only"
-              : "Job Description Only"}
+          <div className="rounded-xl border border-emerald-500/20 bg-emerald-900/10 px-4 py-3 text-sm flex items-center gap-3">
+            <span className="font-semibold text-emerald-400">Source Generated From:</span>
+            <span className="bg-emerald-500/20 text-emerald-300 px-3 py-1 rounded-full font-medium">
+              {inputSource === "resume_only"
+                ? "Resume Only"
+                : inputSource === "both"
+                ? "Both Resume & Job Description"
+                : "Job Description Only"}
+            </span>
           </div>
           <QuestionListContainer questionList={questionList} />
         </div>
@@ -152,7 +163,11 @@ const QuestionList = ({ formData, onCreateLink }) => {
 
       {!loading && questionList.length > 0 && (
         <div className="flex justify-end mt-10">
-          <Button onClick={onFinish} disabled={saveLoading}>
+          <Button 
+            onClick={onFinish} 
+            disabled={saveLoading}
+            className="px-8 py-6 text-lg font-bold bg-blue-600 hover:bg-blue-500 text-white shadow-[0_0_20px_rgba(37,99,235,0.4)] transition-all hover:scale-[1.02]"
+          >
             {saveLoading && <Loader2Icon className="animate-spin mr-2" />}
             Create Interview Link & Finish
           </Button>

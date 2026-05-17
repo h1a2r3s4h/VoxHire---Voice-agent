@@ -13,10 +13,56 @@ export async function POST(req) {
 
     const interviewTypes = Array.isArray(type) ? type.join(", ") : type;
 
-    let FINAL_PROMPT = "";
+    const hasResume = resumeText && resumeText.trim().length > 50;
+    const hasJobDesc = jobDescription && jobDescription.trim().length > 10;
 
-    if (resumeText && resumeText.trim().length > 50) {
+    let FINAL_PROMPT = "";
+    let mode = "";
+
+    if (hasResume && hasJobDesc) {
+      // ✅ BOTH MODE
+      mode = "both";
+      FINAL_PROMPT = `
+You are a strict technical interviewer.
+Generate interview questions based on BOTH the candidate's resume AND the job description.
+
+JOB POSITION:
+${jobPosition}
+
+CANDIDATE RESUME:
+${resumeText}
+
+JOB DESCRIPTION:
+${jobDescription}
+
+INTERVIEW DURATION:
+${duration} minutes
+
+INTERVIEW TYPES:
+${interviewTypes}
+
+RULES:
+- Generate a balanced mix of questions.
+- Ask questions targeting their specific past projects/experience from the resume.
+- Ask questions testing their knowledge on the required skills for the role from the job description.
+- Ask questions exploring how their past experience applies to the requirements of the new role.
+- DO NOT ask generic questions like "tell me about yourself".
+- Keep questions practical, project-focused, and technical.
+
+Return ONLY valid JSON in this exact format, no extra text, no markdown:
+{
+  "interviewQuestions": [
+    {
+      "question": "string",
+      "type": "Technical | Project | Experience | Behavioral",
+      "source": "Resume & Job Description"
+    }
+  ]
+}
+`;
+    } else if (hasResume) {
       // ✅ RESUME MODE
+      mode = "resume";
       FINAL_PROMPT = `
 You are a strict technical interviewer.
 Generate interview questions ONLY from the candidate's resume.
@@ -65,6 +111,7 @@ Return ONLY valid JSON in this exact format, no extra text, no markdown:
 `;
     } else {
       // ✅ JOB DESCRIPTION MODE
+      mode = "job_description";
       FINAL_PROMPT = `
 You are a technical interviewer.
 Generate interview questions ONLY from the job description.
@@ -138,7 +185,7 @@ Return ONLY valid JSON in this exact format, no extra text, no markdown:
 
     return NextResponse.json({
       content: parsed,
-      mode: resumeText && resumeText.trim().length > 50 ? "resume" : "job_description",
+      mode: mode,
     });
 
   } catch (e) {
