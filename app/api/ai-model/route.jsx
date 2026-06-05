@@ -160,8 +160,10 @@ Return ONLY valid JSON in this exact format, no extra text, no markdown:
     });
 
     const completion = await openai.chat.completions.create({
-      model: "google/gemini-2.0-flash-001",
+      model: "google/gemini-2.5-flash",
       messages: [{ role: "user", content: FINAL_PROMPT }],
+      max_tokens: 2000,
+  temperature: 0.7,
     });
 
     const rawContent = completion.choices[0]?.message?.content || "";

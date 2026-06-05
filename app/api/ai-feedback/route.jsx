@@ -26,6 +26,8 @@ export async function POST(req) {
     const completion = await openai.chat.completions.create({
       model: "google/gemini-2.0-flash-001",
       messages: [{ role: "user", content: FINAL_PROMPT }],
+      max_tokens: 2000,
+  temperature: 0.7,
       extra_headers: {
         "HTTP-Referer": "http://localhost:3000",
         "X-Title": "VOX HIRE",
