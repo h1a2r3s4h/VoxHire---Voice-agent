@@ -1,8 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
+import { RedisService } from "@/lib/redis";
 
 export async function POST(req: NextRequest) {
   try {
+    const ip = req.headers.get("x-forwarded-for") || "client-ip";
+
+    // Rate Limiting (max 10 calls per minute)
+    const rateLimit = await RedisService.rateLimit(`ratelimit:aimodel:${ip}`, 10, 60000);
+    if (!rateLimit.success) {
+      return NextResponse.json(
+        { error: "Too many requests. Please wait before creating another interview." },
+        { status: 429 }
+      );
+    }
+
     const {
       jobPosition = "",
       jobDescription = "",
@@ -10,6 +22,13 @@ export async function POST(req: NextRequest) {
       type = [],
       resumeText = "",
     } = await req.json();
+
+    // Cache key for identical requests
+    const cacheKey = `cache:aimodel:${jobPosition}:${duration}:${Array.isArray(type) ? type.join(",") : type}`;
+    const cachedResponse = await RedisService.get(cacheKey);
+    if (cachedResponse) {
+      return NextResponse.json(cachedResponse);
+    }
 
     const interviewTypes = Array.isArray(type) ? type.join(", ") : type;
 
@@ -165,10 +184,14 @@ Return ONLY valid JSON in this exact format, no extra text, no markdown:
 
       const parsed = JSON.parse(cleaned);
 
-      return NextResponse.json({
+      const responseData = {
         content: parsed,
         mode: mode,
-      });
+      };
+
+      await RedisService.set(cacheKey, responseData, 3600);
+
+      return NextResponse.json(responseData);
     } catch (apiErr: any) {
       console.error("OpenRouter API Call Error:", apiErr?.message || apiErr);
 

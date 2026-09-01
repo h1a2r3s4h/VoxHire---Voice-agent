@@ -26,7 +26,7 @@ const AllInterview = () => {
       .order("id", { ascending: false });
 
     if (error) {
-      console.error("Supabase error:", error);
+      console.warn("Supabase query warning:", error);
       return;
     }
 

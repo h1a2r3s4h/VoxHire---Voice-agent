@@ -37,7 +37,7 @@ const ScheduledInterview = () => {
       .order("id", { ascending: false });
 
     if (error) {
-      console.error("SELECT ERROR:", error);
+      console.warn("Supabase query warning:", error);
       return;
     }
     setInterviewList(data || []);

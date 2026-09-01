@@ -31,7 +31,7 @@ const LatestInterviewsList = () => {
       .limit(6);
 
     if (error) {
-      console.error("Supabase error:", error);
+      console.warn("Supabase query warning:", error);
     } else {
       setInterviewList(Interviews || []);
     }
