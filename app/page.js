@@ -1,459 +1,224 @@
 import Link from "next/link";
+import Logo from "@/components/Logo";
 import {
   ArrowRight,
-  BarChart3,
   Clock3,
-  Menu,
   Mic,
-  Phone,
   Users,
+  Sparkles,
+  ShieldCheck,
+  Brain,
 } from "lucide-react";
 
 export default function Home() {
   const features = [
     {
-      icon: <Clock3 className="h-10 w-10 text-blue-600" />,
-      title: "Save Time",
-      desc: "Automate initial screening interviews and focus on final candidates.",
+      icon: <Clock3 className="h-6 w-6 text-indigo-400" />,
+      title: "Save Screening Hours",
+      desc: "Automate initial candidate voice calls and focus your time purely on qualified top talent.",
     },
     {
-      icon: <BarChart3 className="h-10 w-10 text-blue-600" />,
-      title: "Data-Driven Insights",
-      desc: "Get detailed analytics and candidate comparisons based on interview responses.",
+      icon: <Brain className="h-6 w-6 text-indigo-400" />,
+      title: "AI Feedback & Scoring",
+      desc: "Receive instant structured evaluation scores, detailed transcripts, and hiring recommendations.",
     },
     {
-      icon: <Users className="h-10 w-10 text-blue-600" />,
-      title: "Reduce Bias",
-      desc: "Standardized interviews help eliminate unconscious bias in the hiring process.",
+      icon: <ShieldCheck className="h-6 w-6 text-indigo-400" />,
+      title: "Standardized Screening",
+      desc: "Ensure 100% objective, unbiased, and structured first-round candidate screens.",
     },
   ];
 
   const steps = [
     {
-      no: "1",
+      no: "01",
       title: "Create Interview",
-      desc: "Set up your job requirements and customize interview questions.",
+      desc: "Define job roles and let AI craft targeted interview screening questions.",
     },
     {
-      no: "2",
-      title: "Share with Candidates",
-      desc: "Send interview links to candidates to complete at their convenience.",
+      no: "02",
+      title: "Share Unique Link",
+      desc: "Candidates join the interactive voice call on their browser whenever convenient.",
     },
     {
-      no: "3",
-      title: "Review Results",
-      desc: "Get AI-analyzed results, transcripts, and candidate comparisons.",
-    },
-  ];
-
-  const pricing = [
-    {
-      title: "Starter",
-      price: "Free",
-      desc: "Perfect for testing and small hiring flows.",
-      points: ["1 active interview", "Basic dashboard", "Email sharing"],
-    },
-    {
-      title: "Pro",
-      price: "₹999/mo",
-      desc: "Best for growing teams and recruiters.",
-      points: ["Unlimited interviews", "Analytics", "Candidate review tools"],
-      highlight: true,
-    },
-    {
-      title: "Enterprise",
-      price: "Custom",
-      desc: "For teams needing scale and custom workflows.",
-      points: ["Custom integrations", "Priority support", "Advanced reporting"],
+      no: "03",
+      title: "Review Candidate Scores",
+      desc: "Access structured ratings, full transcripts, and instant hiring recommendations.",
     },
   ];
 
   return (
-    <main className="min-h-screen bg-background text-foreground">
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-background/30 backdrop-blur-2xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-10">
-          <Link href="/" className="flex items-center gap-2">
-            <Mic className="h-7 w-7 text-blue-600" />
-            <span className="text-3xl font-extrabold tracking-tight">
-              <span className="text-blue-500">Vox</span>
-              <span className="text-foreground">Hire</span>
-            </span>
-          </Link>
+    <main className="min-h-screen bg-black text-zinc-100 font-sans relative overflow-x-hidden">
+      {/* Background Radial Glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-indigo-600/10 blur-[140px] pointer-events-none rounded-full" />
 
-          <nav className="hidden items-center gap-10 md:flex">
-            <a
-              href="#features"
-              className="text-lg font-medium text-muted-foreground transition hover:text-blue-600"
-            >
+      {/* Header */}
+      <header className="sticky top-0 z-50 border-b border-zinc-800/80 bg-black/80 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+          <Logo size="md" href="/" />
+
+          <nav className="hidden items-center gap-8 md:flex text-sm font-medium text-zinc-400">
+            <a href="#features" className="hover:text-white transition-colors">
               Features
             </a>
-            <a
-              href="#how-it-works"
-              className="text-lg font-medium text-muted-foreground transition hover:text-blue-600"
-            >
+            <a href="#how-it-works" className="hover:text-white transition-colors">
               How It Works
-            </a>
-            <a
-              href="#pricing"
-              className="text-lg font-medium text-muted-foreground transition hover:text-blue-600"
-            >
-              Pricing
             </a>
           </nav>
 
           <div className="flex items-center gap-3">
             <Link
               href="/auth"
-              className="hidden rounded-xl bg-blue-600 px-6 py-3 text-base font-semibold text-white shadow-sm shadow-black/50 transition hover:bg-blue-700 md:inline-flex"
+              className="btn-gradient inline-flex items-center justify-center rounded-xl px-5 py-2 text-sm font-semibold text-white shadow-lg"
             >
               Dashboard
             </Link>
-
-            <button className="inline-flex cursor-pointer rounded-lg border border-border p-2 transition hover:bg-muted md:hidden">
-              <Menu className="h-5 w-5" />
-            </button>
           </div>
         </div>
       </header>
 
-      {/* Hero */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/20 via-background to-background" />
-        <div className="relative mx-auto grid max-w-7xl items-center gap-16 px-6 py-20 lg:grid-cols-2 lg:px-10 lg:py-24">
-          <div>
-            <h1 className="max-w-3xl text-5xl font-extrabold leading-[1.05] tracking-tight text-foreground md:text-6xl xl:text-7xl">
-              AI-Powered <span className="bg-gradient-to-r from-blue-500 to-emerald-400 bg-clip-text text-transparent">Interview</span>
-              <br />
-              <span className="bg-gradient-to-r from-blue-500 to-indigo-500 bg-clip-text text-transparent">Assessment</span> Platform
-              <br />
-              For Recruiters
-            </h1>
-
-            <p className="mt-8 max-w-2xl text-xl leading-10 text-muted-foreground md:text-2xl">
-              An AI-powered voice interviewer that conducts automated interviews, evaluates candidates, and helps companies hire faster.
-            </p>
-
-            <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-              <Link
-                href="/auth"
-                className="inline-flex cursor-pointer items-center justify-center gap-3 rounded-2xl bg-blue-600 px-8 py-4 text-lg font-semibold text-white shadow-[0_0_20px_rgba(37,99,235,0.4)] transition-all hover:scale-[1.02] hover:bg-blue-500"
-              >
-                Create Interview
-                <ArrowRight className="h-5 w-5" />
-              </Link>
-
-              <a
-                href="#features"
-                className="inline-flex cursor-pointer items-center justify-center rounded-2xl border border-white/10 bg-card px-8 py-4 text-lg font-semibold text-foreground shadow-sm shadow-black/50 transition-all hover:scale-[1.02] hover:bg-muted"
-              >
-                Explore Features
-              </a>
-            </div>
+      {/* Hero Section */}
+      <section className="relative pt-24 pb-20 px-6 lg:px-8 border-b border-zinc-900">
+        <div className="mx-auto max-w-4xl text-center">
+          <div className="inline-flex items-center gap-2 rounded-full border border-indigo-500/30 bg-indigo-500/10 px-4 py-1.5 text-xs font-semibold text-indigo-300 mb-8 backdrop-blur-sm shadow-inner">
+            <Sparkles className="h-3.5 w-3.5 text-indigo-400 animate-pulse" />
+            <span>AI Recruiter Voice Agent 2.0</span>
           </div>
 
-          {/* Right mock dashboard */}
-          <div className="relative">
-            <div className="rounded-[32px] border border-border bg-card p-4 shadow-[0_20px_80px_rgba(15,23,42,0.12)]">
-              <div className="overflow-hidden rounded-[28px] border border-border bg-[#fbfdff]">
-                <div className="grid min-h-[520px] grid-cols-[220px_1fr]">
-                  {/* Sidebar */}
-                  <div className="border-r border-border bg-card p-4">
-                    <div className="mb-6 text-xl font-bold">
-                      <span className="text-blue-600">AI</span>cruiter
-                    </div>
+          <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-6xl lg:text-7xl leading-[1.1]">
+            Automate Screening Calls with <br />
+            <span className="text-gradient">Real-Time Voice AI</span>
+          </h1>
 
-                    <button className="mb-4 w-full rounded-xl bg-blue-600 px-4 py-3 text-left text-sm font-semibold text-white">
-                      + Create New Interview
-                    </button>
-
-                    <div className="space-y-2">
-                      <div className="rounded-xl bg-blue-50 px-4 py-3 text-sm font-medium text-blue-700">
-                        Dashboard
-                      </div>
-                      <div className="rounded-xl px-4 py-3 text-sm text-muted-foreground">
-                        Scheduled Interview
-                      </div>
-                      <div className="rounded-xl px-4 py-3 text-sm text-muted-foreground">
-                        All Interview
-                      </div>
-                      <div className="rounded-xl px-4 py-3 text-sm text-muted-foreground">
-                        Billing
-                      </div>
-                      <div className="rounded-xl px-4 py-3 text-sm text-muted-foreground">
-                        Settings
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Content */}
-                  <div className="bg-muted/50 p-5">
-                    <div className="flex items-center justify-between border-b border-border pb-4">
-                      <div>
-                        <h3 className="text-lg font-bold text-foreground">
-                          Welcome back, Sarah!
-                        </h3>
-                        <p className="text-sm text-muted-foreground">
-                          AI-Driven Interviews, Hassle-Free Hiring
-                        </p>
-                      </div>
-
-                      <div className="flex items-center gap-3">
-                        <div className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
-                        <div className="h-10 w-10 rounded-full bg-slate-200" />
-                      </div>
-                    </div>
-
-                    <h4 className="mt-5 text-xl font-bold text-foreground">
-                      Dashboard
-                    </h4>
-
-                    <div className="mt-4 grid gap-4 md:grid-cols-2">
-                      <div className="rounded-2xl border border-border bg-card p-5 shadow-sm shadow-black/50">
-                        <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50">
-                          <Mic className="h-5 w-5 text-blue-600" />
-                        </div>
-                        <h5 className="font-bold">Create New Interview</h5>
-                        <p className="mt-2 text-sm text-muted-foreground">
-                          Create AI interviews and schedule them with
-                          candidates.
-                        </p>
-                      </div>
-
-                      <div className="rounded-2xl border border-border bg-card p-5 shadow-sm shadow-black/50">
-                        <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50">
-                          <Phone className="h-5 w-5 text-blue-600" />
-                        </div>
-                        <h5 className="font-bold">Create Phone Screening Call</h5>
-                        <p className="mt-2 text-sm text-muted-foreground">
-                          Schedule phone screening calls with potential
-                          candidates.
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="mt-6">
-                      <h5 className="mb-4 font-bold text-foreground">
-                        Previously Created Interviews
-                      </h5>
-
-                      <div className="grid gap-4 md:grid-cols-3">
-                        {["Google", "Microsoft", "Amazon"].map((company, i) => (
-                          <div
-                            key={company}
-                            className="rounded-2xl border border-border bg-card p-4 shadow-sm shadow-black/50"
-                          >
-                            <div className="flex items-start justify-between">
-                              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-50 text-sm font-bold text-blue-600">
-                                {company[0]}
-                              </div>
-                              <span className="text-xs text-muted-foreground">
-                                20 Oct 2024
-                              </span>
-                            </div>
-
-                            <h6 className="mt-4 font-bold text-foreground">
-                              Full Stack Developer
-                            </h6>
-                            <p className="mt-1 text-sm text-muted-foreground">30 Min</p>
-
-                            <div className="mt-4 flex gap-2">
-                              <button className="flex-1 rounded-lg border border-border px-3 py-2 text-sm font-medium text-muted-foreground">
-                                Copy Link
-                              </button>
-                              <button className="flex-1 rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium text-white">
-                                Send
-                              </button>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* soft glow */}
-            <div className="absolute -right-8 -top-8 -z-10 h-40 w-40 rounded-full bg-blue-200/40 blur-3xl" />
-            <div className="absolute -bottom-8 -left-8 -z-10 h-40 w-40 rounded-full bg-sky-200/40 blur-3xl" />
-          </div>
-        </div>
-      </section>
-
-      {/* Features */}
-      <section id="features" className="px-6 py-24 lg:px-10">
-        <div className="mx-auto max-w-7xl">
-          <div className="mx-auto max-w-4xl text-center">
-            <h2 className="text-4xl font-extrabold tracking-tight text-foreground md:text-5xl">
-              Streamline Your Hiring Process
-            </h2>
-            <p className="mt-4 text-xl leading-9 text-muted-foreground">
-              AiCruiter helps you save time and find better candidates with our
-              advanced AI interview technology.
-            </p>
-          </div>
-
-          <div className="mt-14 grid gap-8 md:grid-cols-3">
-            {features.map((item) => (
-              <div
-                key={item.title}
-                className="rounded-3xl border border-white/5 bg-card/50 backdrop-blur-sm px-8 py-10 text-center shadow-lg shadow-black/50 transition-all hover:-translate-y-2 hover:shadow-[0_0_30px_rgba(37,99,235,0.15)]"
-              >
-                <div className="mb-6 flex justify-center">{item.icon}</div>
-                <h3 className="text-3xl font-bold text-foreground">
-                  {item.title}
-                </h3>
-                <p className="mt-5 text-lg leading-9 text-muted-foreground">
-                  {item.desc}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* How it works */}
-      <section id="how-it-works" className="bg-card px-6 py-24 lg:px-10">
-        <div className="mx-auto max-w-7xl">
-          <div className="mx-auto max-w-4xl text-center">
-            <h2 className="text-4xl font-extrabold tracking-tight text-foreground md:text-5xl">
-              How AiCruiter Works
-            </h2>
-            <p className="mt-4 text-xl leading-9 text-muted-foreground">
-              Three simple steps to transform your recruitment process
-            </p>
-          </div>
-
-          <div className="mt-16 grid gap-12 md:grid-cols-3">
-            {steps.map((step) => (
-              <div key={step.no} className="text-center">
-                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-blue-50 text-3xl font-bold text-blue-700">
-                  {step.no}
-                </div>
-                <h3 className="mt-7 text-3xl font-bold text-foreground">
-                  {step.title}
-                </h3>
-                <p className="mt-5 text-lg leading-9 text-muted-foreground">
-                  {step.desc}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Pricing */}
-      <section id="pricing" className="px-6 py-24 lg:px-10">
-        <div className="mx-auto max-w-7xl">
-          <div className="mx-auto max-w-4xl text-center">
-            <h2 className="text-4xl font-extrabold tracking-tight text-foreground md:text-5xl">
-              Simple Pricing
-            </h2>
-            <p className="mt-4 text-xl leading-9 text-muted-foreground">
-              Choose the plan that fits your hiring needs.
-            </p>
-          </div>
-
-          <div className="mt-14 grid gap-8 md:grid-cols-3">
-            {pricing.map((plan) => (
-              <div
-                key={plan.title}
-                className={`rounded-3xl border p-8 shadow-sm shadow-black/50 transition hover:-translate-y-1 hover:shadow-lg shadow-black/50 ${
-                  plan.highlight
-                    ? "border-blue-600 bg-blue-600 text-white"
-                    : "border-border bg-card text-foreground"
-                }`}
-              >
-                <h3 className="text-2xl font-bold">{plan.title}</h3>
-                <div className="mt-4 text-4xl font-extrabold">{plan.price}</div>
-                <p
-                  className={`mt-4 text-base ${
-                    plan.highlight ? "text-blue-50" : "text-muted-foreground"
-                  }`}
-                >
-                  {plan.desc}
-                </p>
-
-                <div className="mt-6 space-y-3">
-                  {plan.points.map((point) => (
-                    <div key={point} className="text-base">
-                      • {point}
-                    </div>
-                  ))}
-                </div>
-
-                <Link
-                  href="/auth"
-                  className={`mt-8 inline-flex w-full items-center justify-center rounded-2xl px-5 py-3 text-base font-semibold transition ${
-                    plan.highlight
-                      ? "bg-card text-blue-600 hover:bg-blue-50"
-                      : "bg-slate-900 text-white hover:bg-slate-800"
-                  }`}
-                >
-                  Get Started
-                </Link>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="bg-background px-6 py-24 lg:px-10">
-        <div className="mx-auto max-w-5xl rounded-[36px] border border-white/10 bg-gradient-to-br from-card to-blue-900/10 px-8 py-16 text-center shadow-xl shadow-black/50 md:px-16">
-          <h2 className="text-4xl font-extrabold tracking-tight text-foreground md:text-5xl">
-            Ready to Transform Your Hiring Process?
-          </h2>
-          <p className="mt-5 text-xl leading-9 text-muted-foreground">
-            Join hundreds of companies already using AiCruiter to find the best
-            talent.
+          <p className="mt-6 text-lg text-zinc-400 max-w-2xl mx-auto leading-relaxed">
+            Screen candidates faster, smarter, and at scale. VoxHire conducts interactive initial voice interviews, generates structured evaluations, and ranks top applicants automatically.
           </p>
 
-          <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               href="/auth"
-              className="inline-flex cursor-pointer items-center justify-center rounded-2xl bg-blue-600 px-8 py-4 text-lg font-semibold text-white shadow-[0_0_20px_rgba(37,99,235,0.4)] transition-all hover:scale-[1.02] hover:bg-blue-500"
+              className="btn-gradient w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl px-8 py-3.5 text-base font-semibold text-white shadow-lg shadow-indigo-600/30"
             >
-              Get Started for Free
+              Get Started Free
+              <ArrowRight className="h-4 w-4" />
             </Link>
 
             <a
-              href="#pricing"
-              className="inline-flex cursor-pointer items-center justify-center rounded-2xl border border-white/10 bg-card px-8 py-4 text-lg font-semibold text-foreground shadow-lg shadow-black/50 transition-all hover:scale-[1.02] hover:bg-muted"
+              href="#how-it-works"
+              className="w-full sm:w-auto inline-flex items-center justify-center rounded-xl border border-zinc-800 bg-zinc-950 px-8 py-3.5 text-base font-semibold text-zinc-300 transition-all hover:bg-zinc-900 hover:text-white hover:border-zinc-700"
             >
-              Schedule a Demo
+              See How It Works
             </a>
+          </div>
+        </div>
+
+        {/* Dashboard Preview Graphic */}
+        <div className="mt-16 mx-auto max-w-5xl rounded-3xl border border-zinc-800 bg-zinc-950/80 p-3 shadow-2xl shadow-indigo-950/40 backdrop-blur-xl">
+          <div className="rounded-2xl border border-zinc-800/80 bg-black p-6 md:p-8">
+            <div className="flex items-center justify-between border-b border-zinc-800 pb-4 mb-6">
+              <div className="flex items-center gap-3">
+                <div className="h-3 w-3 rounded-full bg-indigo-500 animate-ping" />
+                <span className="text-sm font-semibold text-white">Live Voice Interview Session</span>
+              </div>
+              <span className="text-xs font-mono text-indigo-400 border border-indigo-500/30 bg-indigo-500/10 px-3 py-1 rounded-lg">
+                Vapi WebRTC Connected
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="rounded-2xl border border-indigo-500/30 bg-zinc-950 p-8 flex flex-col items-center justify-center text-center shadow-lg shadow-indigo-950/20">
+                <div className="relative mb-4">
+                  <span className="absolute inline-flex h-16 w-16 animate-ping rounded-full bg-indigo-500/20" />
+                  <div className="relative h-16 w-16 rounded-full bg-indigo-600/10 border border-indigo-500/40 flex items-center justify-center text-indigo-400">
+                    <Mic className="h-8 w-8" />
+                  </div>
+                </div>
+                <h4 className="font-bold text-white text-base">AI Interviewer</h4>
+                <p className="text-xs text-indigo-300 mt-2 animate-pulse">● Speaking question 2 of 5...</p>
+              </div>
+
+              <div className="rounded-2xl border border-zinc-800 bg-zinc-950 p-8 flex flex-col items-center justify-center text-center">
+                <div className="h-16 w-16 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400 mb-4">
+                  <Users className="h-8 w-8" />
+                </div>
+                <h4 className="font-bold text-white text-base">Candidate</h4>
+                <p className="text-xs text-zinc-500 mt-2">Listening to response...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Grid */}
+      <section id="features" className="py-24 px-6 lg:px-8 border-b border-zinc-900">
+        <div className="mx-auto max-w-6xl">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+              Engineered for Modern Hiring Teams
+            </h2>
+            <p className="mt-3 text-zinc-400 text-base">
+              Everything you need to automate initial phone screens without compromising candidate experience.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {features.map((item) => (
+              <div
+                key={item.title}
+                className="rounded-3xl border border-zinc-800/80 bg-zinc-950/80 p-8 transition-all duration-300 hover:border-indigo-500/50 hover:bg-zinc-900/40 hover:-translate-y-1 hover:shadow-xl hover:shadow-indigo-950/20"
+              >
+                <div className="mb-6 inline-flex p-3.5 rounded-2xl bg-indigo-500/10 border border-indigo-500/30">
+                  {item.icon}
+                </div>
+                <h3 className="text-xl font-bold text-white mb-2.5">{item.title}</h3>
+                <p className="text-sm text-zinc-400 leading-relaxed">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works */}
+      <section id="how-it-works" className="py-24 px-6 lg:px-8 border-b border-zinc-900 bg-zinc-950/40">
+        <div className="mx-auto max-w-6xl">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+              How VoxHire Works
+            </h2>
+            <p className="mt-3 text-zinc-400 text-base">
+              Three simple steps from creating job listings to receiving candidate scores.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {steps.map((step) => (
+              <div key={step.no} className="relative rounded-3xl border border-zinc-800 bg-black p-8 transition-all duration-300 hover:border-indigo-500/40">
+                <span className="text-xs font-mono font-semibold text-indigo-400 bg-indigo-500/10 border border-indigo-500/30 px-3 py-1 rounded-lg">
+                  {step.no}
+                </span>
+                <h3 className="mt-6 text-xl font-bold text-white mb-2.5">{step.title}</h3>
+                <p className="text-sm text-zinc-400 leading-relaxed">{step.desc}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border bg-card">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-6 py-8 text-center md:flex-row md:text-left lg:px-10">
+      <footer className="py-10 px-6 border-t border-zinc-900 bg-black">
+        <div className="mx-auto max-w-6xl flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-zinc-500">
           <div className="flex items-center gap-2">
-            <Mic className="h-7 w-7 text-blue-600" />
-            <span className="text-2xl font-extrabold tracking-tight">
-              <span className="text-blue-500">AI</span>
-              <span className="text-foreground">cruiter</span>
-            </span>
+            <Mic className="h-4 w-4 text-indigo-400" />
+            <span className="font-semibold text-white">Vox<span className="text-indigo-400">Hire</span></span>
           </div>
 
-          <div className="flex items-center gap-8 text-lg text-muted-foreground">
-            <a href="#" className="hover:text-blue-600">
-              Terms
-            </a>
-            <a href="#" className="hover:text-blue-600">
-              Privacy
-            </a>
-            <a href="#" className="hover:text-blue-600">
-              Contact
-            </a>
-          </div>
+          <p>© 2026 VoxHire. All rights reserved.</p>
 
-          <p className="text-lg text-muted-foreground">
-            © 2025 AiCruiter. All rights reserved.
-          </p>
+          <div className="flex items-center gap-6">
+            <a href="#" className="hover:text-zinc-300 transition-colors">Privacy</a>
+            <a href="#" className="hover:text-zinc-300 transition-colors">Terms</a>
+            <a href="#" className="hover:text-zinc-300 transition-colors">Contact</a>
+          </div>
         </div>
       </footer>
     </main>

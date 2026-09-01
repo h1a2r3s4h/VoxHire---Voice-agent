@@ -1,31 +1,34 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import InterviewHeader from './_components/InterviewHeader';
-import { Toaster } from "sonner";
 import { InterviewDataContext } from '@/context/InterviewDataContext';
 
 const InterviewLayout = ({ children }) => {
   const [interviewInfo, setInterviewInfo] = useState(null);
 
-  // ✅ Load from sessionStorage AFTER mount (fixes hydration error)
   useEffect(() => {
     const saved = sessionStorage.getItem('interviewInfo');
     if (saved) {
-      setInterviewInfo(JSON.parse(saved));
+      try {
+        setInterviewInfo(JSON.parse(saved));
+      } catch (err) {
+        console.error("Failed to parse saved interview info:", err);
+      }
     }
   }, []);
 
   const handleSetInterviewInfo = (data) => {
     setInterviewInfo(data);
-    sessionStorage.setItem('interviewInfo', JSON.stringify(data));
+    if (data) {
+      sessionStorage.setItem('interviewInfo', JSON.stringify(data));
+    }
   };
 
   return (
     <InterviewDataContext.Provider value={{ interviewInfo, setInterviewInfo: handleSetInterviewInfo }}>
-      <div className='bg-secondary min-h-screen'>
+      <div className="bg-black min-h-screen text-zinc-100 font-sans">
         <InterviewHeader />
-        {children}
-        <Toaster richColors position="top-right" />
+        <main>{children}</main>
       </div>
     </InterviewDataContext.Provider>
   );

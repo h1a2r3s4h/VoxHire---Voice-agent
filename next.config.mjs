@@ -2,12 +2,10 @@
 const nextConfig = {
   output: "standalone",
 
-  experimental: {
-    turbo: {
-      resolveAlias: {
-        canvas: false,
-        encoding: false,
-      },
+  turbopack: {
+    resolveAlias: {
+      canvas: "./lib/emptyModule.js",
+      encoding: "./lib/emptyModule.js",
     },
   },
 

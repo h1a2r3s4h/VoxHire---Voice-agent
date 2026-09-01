@@ -1,13 +1,13 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import mammoth from "mammoth";
 
 export const runtime = "nodejs";
 
-async function extractPdfText(buffer) {
+async function extractPdfText(buffer: Buffer): Promise<string> {
   const { default: PDFParser } = await import("pdf2json");
   return new Promise((resolve, reject) => {
-    const pdfParser = new PDFParser(null, 1);
-    pdfParser.on("pdfParser_dataError", (err) => reject(err));
+    const pdfParser = new (PDFParser as any)(null, 1);
+    pdfParser.on("pdfParser_dataError", (err: any) => reject(err));
     pdfParser.on("pdfParser_dataReady", () => {
       resolve(pdfParser.getRawTextContent());
     });
@@ -15,10 +15,10 @@ async function extractPdfText(buffer) {
   });
 }
 
-export async function POST(req) {
+export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
-    const file = formData.get("resume");
+    const file = formData.get("resume") as File | null;
 
     if (!file) {
       return NextResponse.json(
@@ -63,8 +63,7 @@ export async function POST(req) {
     }
 
     return NextResponse.json({ resumeText: cleanedText });
-
-  } catch (error) {
+  } catch (error: any) {
     console.log("PARSE RESUME ERROR:", error);
     return NextResponse.json(
       { error: "Failed to parse resume" },

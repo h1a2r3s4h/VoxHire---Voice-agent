@@ -1,26 +1,40 @@
 import React from "react";
 import Link from "next/link";
-import { PhoneIcon, Video } from "lucide-react";
+import { Phone, Video, ArrowRight } from "lucide-react";
 
 const CreateOptions = () => {
   return (
-    <div className="grid grid-cols-2 gap-5">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <Link
         href="/dashboard/create-interview"
-        className="bg-card border border-white/5 rounded-xl p-6 cursor-pointer hover:shadow-[0_0_20px_rgba(37,99,235,0.15)] transition-all hover:-translate-y-1"
+        className="bg-zinc-950 border border-zinc-800/80 rounded-3xl p-7 cursor-pointer hover:border-indigo-500/50 hover:shadow-xl hover:shadow-indigo-950/20 transition-all duration-300 hover:-translate-y-1 group"
       >
-        <Video className="p-3 text-blue-400 bg-gradient-to-br from-blue-900/40 to-blue-600/10 rounded-lg h-14 w-14 border border-blue-500/20" />
-        <h2 className="font-bold mt-4 text-foreground">Create New Interview</h2>
-        <p className="text-muted-foreground mt-1 text-sm">
-          Create AI interviews & schedule them with candidates
+        <div className="flex items-center justify-between">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-600/10 border border-indigo-500/30 text-indigo-400 group-hover:border-indigo-500/60 transition-colors">
+            <Video className="h-6 w-6" />
+          </div>
+          <ArrowRight className="h-5 w-5 text-zinc-600 group-hover:text-indigo-400 group-hover:translate-x-1 transition-all" />
+        </div>
+        <h3 className="font-extrabold text-xl mt-5 text-white group-hover:text-indigo-300 transition-colors">
+          Create New Interview
+        </h3>
+        <p className="text-zinc-400 mt-2 text-sm leading-relaxed">
+          Set up AI voice interview questions and generate an instant screening link for candidates.
         </p>
       </Link>
 
-      <div className="bg-card border border-white/5 rounded-xl p-6 cursor-pointer hover:shadow-[0_0_20px_rgba(37,99,235,0.15)] transition-all hover:-translate-y-1">
-        <PhoneIcon className="p-3 text-emerald-400 bg-gradient-to-br from-emerald-900/40 to-emerald-600/10 rounded-lg h-14 w-14 border border-emerald-500/20" />
-        <h2 className="font-bold mt-4 text-foreground">Create Screening Call</h2>
-        <p className="text-muted-foreground mt-1 text-sm">
-          Schedule phone screening call with candidates
+      <div className="bg-zinc-950 border border-zinc-800/80 rounded-3xl p-7 cursor-pointer hover:border-indigo-500/50 hover:shadow-xl hover:shadow-indigo-950/20 transition-all duration-300 hover:-translate-y-1 group">
+        <div className="flex items-center justify-between">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-600/10 border border-indigo-500/30 text-indigo-400 group-hover:border-indigo-500/60 transition-colors">
+            <Phone className="h-6 w-6" />
+          </div>
+          <ArrowRight className="h-5 w-5 text-zinc-600 group-hover:text-indigo-400 group-hover:translate-x-1 transition-all" />
+        </div>
+        <h3 className="font-extrabold text-xl mt-5 text-white group-hover:text-indigo-300 transition-colors">
+          Create Phone Screening Call
+        </h3>
+        <p className="text-zinc-400 mt-2 text-sm leading-relaxed">
+          Schedule direct real-time AI phone screening calls with prospective job candidates.
         </p>
       </div>
     </div>

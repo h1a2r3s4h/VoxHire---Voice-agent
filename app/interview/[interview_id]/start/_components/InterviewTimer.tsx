@@ -3,7 +3,11 @@
 import { Timer } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
-const InterviewTimer = ({ isRunning }) => {
+interface InterviewTimerProps {
+  isRunning: boolean;
+}
+
+const InterviewTimer: React.FC<InterviewTimerProps> = ({ isRunning }) => {
   const [seconds, setSeconds] = useState(0);
 
   useEffect(() => {
@@ -16,7 +20,7 @@ const InterviewTimer = ({ isRunning }) => {
     return () => clearInterval(interval);
   }, [isRunning]);
 
-  const formatTime = (totalSeconds) => {
+  const formatTime = (totalSeconds: number): string => {
     const hrs = String(Math.floor(totalSeconds / 3600)).padStart(2, "0");
     const mins = String(Math.floor((totalSeconds % 3600) / 60)).padStart(
       2,
@@ -28,7 +32,7 @@ const InterviewTimer = ({ isRunning }) => {
   };
 
   return (
-    <span className="flex items-center gap-2">
+    <span className="flex items-center gap-2" data-testid="interview-timer">
       <Timer />
       {formatTime(seconds)}
     </span>

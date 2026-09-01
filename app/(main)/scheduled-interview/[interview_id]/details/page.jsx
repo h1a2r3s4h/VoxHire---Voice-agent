@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import InterviewDetailContainer from "./_components/InterviewDetailContainer";
 import CandidateList from "./_components/CandidateList";
+import CandidateLeaderboard from "./_components/CandidateLeaderboard";
 
 const InterviewDetail = () => {
   const params = useParams();
@@ -64,13 +65,15 @@ const InterviewDetail = () => {
   };
 
   return (
-    <div className="mt-5">
-      <h2 className="font-bold text-2xl">Interview Detail</h2>
+    <div className="mt-5 space-y-6">
+      <h2 className="font-bold text-2xl text-white">Interview Detail</h2>
       <InterviewDetailContainer
         interviewDetail={interviewDetail}
         loading={loading}
       />
-      {/* ✅ Fixed prop name: candidateList not CandidateList */}
+      <CandidateLeaderboard
+        candidateList={interviewDetail?.["interview-feedback"] || []}
+      />
       <CandidateList
         candidateList={interviewDetail?.["interview-feedback"] || []}
       />

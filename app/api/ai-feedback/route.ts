@@ -1,8 +1,8 @@
 import { FEEDBACK_PROMPT } from "@/services/Constants";
 import OpenAI from "openai";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req) {
+export async function POST(req: NextRequest) {
   try {
     const { conversation } = await req.json();
 
@@ -15,7 +15,7 @@ export async function POST(req) {
 
     const FINAL_PROMPT = FEEDBACK_PROMPT.replace(
       "{{conversation}}",
-      JSON.stringify(conversation)
+      JSON.stringify(conversation || [])
     );
 
     const openai = new OpenAI({
@@ -23,21 +23,25 @@ export async function POST(req) {
       apiKey: process.env.OPENROUTER_API_KEY,
     });
 
-    const completion = await openai.chat.completions.create({
-      model: "google/gemini-2.0-flash-001",
-      messages: [{ role: "user", content: FINAL_PROMPT }],
-      max_tokens: 2000,
-  temperature: 0.7,
-      extra_headers: {
-        "HTTP-Referer": "http://localhost:3000",
-        "X-Title": "VOX HIRE",
+    const completion = await openai.chat.completions.create(
+      {
+        model: "google/gemini-2.0-flash-001",
+        messages: [{ role: "user", content: FINAL_PROMPT }],
+        max_tokens: 2000,
+        temperature: 0.7,
       },
-    });
+      {
+        headers: {
+          "HTTP-Referer": "http://localhost:3000",
+          "X-Title": "VOX HIRE",
+        },
+      }
+    );
 
     return NextResponse.json({
       content: completion?.choices?.[0]?.message?.content || "",
     });
-  } catch (e) {
+  } catch (e: any) {
     console.error("AI feedback route error:", e);
 
     return NextResponse.json(

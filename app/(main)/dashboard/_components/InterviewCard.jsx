@@ -1,15 +1,15 @@
 "use client";
 
 import moment from "moment";
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Copy, Send } from "lucide-react";
-import { FaWhatsapp } from "react-icons/fa";
+import { ArrowRight, Copy, Send, MessageSquare, Trash2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/services/supabaseClient";
 
-function InterviewCard({ interview, viewDetail = false }) {
-   console.log("InterviewCard Data:", interview);
+function InterviewCard({ interview, viewDetail = false, onRefresh }) {
+  const [isDeleting, setIsDeleting] = useState(false);
   const url = `${process.env.NEXT_PUBLIC_HOST_URL}/${interview?.interview_id}`;
 
   const feedbackList =
@@ -24,9 +24,9 @@ function InterviewCard({ interview, viewDetail = false }) {
   const copyLink = async () => {
     try {
       await navigator.clipboard.writeText(url);
-      toast("Link copied to clipboard!");
+      toast.success("Interview link copied to clipboard!");
     } catch {
-      toast("Failed to copy link");
+      toast.error("Failed to copy link");
     }
   };
 
@@ -41,45 +41,109 @@ function InterviewCard({ interview, viewDetail = false }) {
     window.open(`https://wa.me/?text=${text}`, "_blank");
   };
 
+  const handleDelete = async () => {
+    if (!interview?.interview_id) return;
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete "${interview?.jobPosition || "this interview"}" from history?`
+    );
+    if (!confirmDelete) return;
+
+    try {
+      setIsDeleting(true);
+      await supabase
+        .from("interview-feedback")
+        .delete()
+        .eq("interview_id", interview.interview_id);
+
+      const { error } = await supabase
+        .from("Interviews")
+        .delete()
+        .eq("interview_id", interview.interview_id);
+
+      if (error) {
+        toast.error("Failed to delete interview.");
+      } else {
+        toast.success("Interview deleted successfully.");
+        onRefresh?.();
+      }
+    } catch (err) {
+      console.error("Delete error:", err);
+      toast.error("Error removing interview.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
-    <div className="p-6 bg-card rounded-2xl border border-white/5 shadow-black/50 hover:shadow-[0_0_20px_rgba(37,99,235,0.15)] transition-all hover:-translate-y-1">
-      <div className="flex items-center justify-between">
-        <div className="h-12 w-12 bg-gradient-to-tr from-blue-600 to-indigo-500 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-[0_0_10px_rgba(37,99,235,0.3)]">
-          {interview?.jobPosition?.[0] || "I"}
+    <div className="p-6 bg-zinc-950 rounded-3xl border border-zinc-800/80 hover:border-indigo-500/50 hover:shadow-xl hover:shadow-indigo-950/20 transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between group">
+      <div>
+        <div className="flex items-center justify-between">
+          <div className="h-10 w-10 bg-indigo-600/10 border border-indigo-500/30 rounded-xl flex items-center justify-center text-indigo-400 font-extrabold text-sm uppercase group-hover:border-indigo-500/60 transition-colors">
+            {interview?.jobPosition?.[0] || "I"}
+          </div>
+
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-zinc-500 font-mono">
+              {interview?.created_at
+                ? moment(interview.created_at).format("DD MMM YYYY")
+                : "No date"}
+            </span>
+            <button
+              onClick={handleDelete}
+              disabled={isDeleting}
+              title="Delete interview"
+              className="text-zinc-500 hover:text-red-400 transition-colors p-1.5 rounded-lg hover:bg-red-500/10 disabled:opacity-50"
+            >
+              {isDeleting ? (
+                <Loader2 className="w-4 h-4 animate-spin text-red-400" />
+              ) : (
+                <Trash2 className="w-4 h-4" />
+              )}
+            </button>
+          </div>
         </div>
 
-        <h2 className="text-sm text-muted-foreground">
-          {interview?.created_at
-            ? moment(interview.created_at).format("DD MMM YYYY")
-            : "No date"}
-        </h2>
+        <h3 className="mt-5 font-extrabold text-lg text-white capitalize line-clamp-1 group-hover:text-indigo-300 transition-colors">
+          {interview?.jobPosition || "Software Engineer"}
+        </h3>
+
+        <div className="mt-3.5 flex items-center justify-between text-xs">
+          <span className="bg-zinc-900 border border-zinc-800 text-zinc-400 px-3 py-1 rounded-lg">
+            {interview?.duration || "15"} Min
+          </span>
+          <span className="text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-3 py-1 rounded-lg font-semibold">
+            {candidateCount} Candidates
+          </span>
+        </div>
       </div>
 
-      <h2 className="mt-5 font-extrabold text-xl text-foreground">{interview?.jobPosition}</h2>
-
-      <h2 className="mt-3 text-muted-foreground flex justify-between items-center text-sm">
-        <span className="bg-white/5 px-3 py-1 rounded-full">{interview?.duration} Min</span>
-        <span className="text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full font-medium">{candidateCount} Candidates</span>
-      </h2>
-
       {!viewDetail ? (
-        <div className="grid grid-cols-3 gap-3 mt-5">
-          <Button variant="outline" className="rounded-xl" onClick={copyLink}>
-            <Copy className="w-4 h-4 mr-2" />
+        <div className="grid grid-cols-3 gap-2 mt-6 pt-4 border-t border-zinc-900">
+          <Button
+            variant="outline"
+            className="rounded-xl border-zinc-800 bg-zinc-900/60 text-zinc-300 hover:bg-zinc-800 hover:text-white text-xs px-2 py-2"
+            onClick={copyLink}
+          >
+            <Copy className="w-3.5 h-3.5 mr-1 text-indigo-400" />
             Copy
           </Button>
 
-          <Button variant="outline" className="rounded-xl" onClick={sendEmail}>
-            <Send className="w-4 h-4 mr-2" />
+          <Button
+            variant="outline"
+            className="rounded-xl border-zinc-800 bg-zinc-900/60 text-zinc-300 hover:bg-zinc-800 hover:text-white text-xs px-2 py-2"
+            onClick={sendEmail}
+          >
+            <Send className="w-3.5 h-3.5 mr-1 text-indigo-400" />
             Email
           </Button>
 
           <Button
-            className="bg-green-500 hover:bg-green-600 text-white rounded-xl"
+            variant="outline"
+            className="rounded-xl border-zinc-800 bg-zinc-900/60 text-zinc-300 hover:bg-zinc-800 hover:text-white text-xs px-2 py-2"
             onClick={sendWhatsApp}
           >
-            <FaWhatsapp className="w-4 h-4 mr-2" />
-            WhatsApp
+            <MessageSquare className="w-3.5 h-3.5 mr-1 text-indigo-400" />
+            Share
           </Button>
         </div>
       ) : (
@@ -87,8 +151,8 @@ function InterviewCard({ interview, viewDetail = false }) {
           href={`/scheduled-interview/${interview?.interview_id}/details`}
           className="block mt-6"
         >
-          <Button className="w-full bg-blue-600/10 text-blue-400 hover:bg-blue-600/20 border-0 transition-colors" variant="outline">
-            View Detail <ArrowRight className="ml-2 w-4 h-4" />
+          <Button className="w-full bg-indigo-600/10 text-indigo-400 hover:bg-indigo-600/20 border border-indigo-500/30 rounded-xl text-xs font-semibold py-2.5 transition-all" variant="outline">
+            View Details <ArrowRight className="ml-1.5 w-3.5 h-3.5" />
           </Button>
         </Link>
       )}

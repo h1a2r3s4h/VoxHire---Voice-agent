@@ -1,16 +1,14 @@
-import { Mic } from 'lucide-react'
-import React from 'react'
+import React from 'react';
+import Logo from '@/components/Logo';
 
 const InterviewHeader = () => {
   return (
-    <div className='p-4 shadow-sm shadow-black/50'>
-  <span className="flex items-center gap-2 text-3xl font-extrabold tracking-tight">
-    <Mic className="h-7 w-7 text-blue-600" />
-    <span className="text-blue-500">Vox</span>
-    <span className="text-foreground">Hire</span>
-  </span>
-</div>
-  )
-}
+    <header className="px-6 py-4 border-b border-zinc-900 bg-black">
+      <div className="mx-auto max-w-6xl flex items-center justify-between">
+        <Logo size="md" href="/" />
+      </div>
+    </header>
+  );
+};
 
-export default InterviewHeader
+export default InterviewHeader;

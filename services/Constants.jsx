@@ -97,21 +97,32 @@ Return JSON in this exact format:
 The goal is to create a structured, relevant, and time-optimized interview plan for a {{jobTitle}} role.`;
 
 export const FEEDBACK_PROMPT = `{{conversation}}
-Based on this Interview Conversation between the assistant and the user, give me feedback for the user interview.
-IMPORTANT: Even if the conversation is extremely short, incomplete, or stopped manually, you MUST evaluate whatever is available. If no questions were answered, assign a rating of 0.
-Give me a rating out of 10 for technical Skills, Communication, Problem Solving, and Experience. 
+Based on this Interview Conversation between the assistant and the user, give me detailed evaluation feedback.
+IMPORTANT: Even if the conversation is short, incomplete, or stopped manually, you MUST evaluate whatever is available. If no questions were answered, assign ratings of 0.
+
+Give me ratings out of 10 for:
+1. Technical Depth (technicalDepth)
+2. Problem Solving (problemSolving)
+3. Communication Clarity (communicationClarity)
+4. Confidence & Response Velocity (confidenceVelocity)
+5. Role & Culture Fit (roleFit)
+
 Also give me a summary in 3 lines about the interview and one line to let me know whether they are recommended for hire or not with a message.
-You must NEVER respond with plain text. Return ONLY the JSON in this exact format:
+You must NEVER respond with plain text. Return ONLY JSON in this exact format:
 {
     "feedback": {
         "rating": {
             "technicalSkills": 5,
             "communication": 6,
             "problemSolving": 4,
-            "experience": 7
+            "experience": 7,
+            "technicalDepth": 6,
+            "communicationClarity": 7,
+            "confidenceVelocity": 6,
+            "roleFit": 7
         },
         "summery": "<in 3 Lines>",
         "Recommendation": true,
         "RecommendationMsg": ""
     }
-}`
+}`;
