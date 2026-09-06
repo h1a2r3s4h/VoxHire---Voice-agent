@@ -24,6 +24,15 @@
 
 ## 🏗️ System Architecture & Workflow
 
+<div align="center">
+  <img src="public/architecture.png" alt="VoxHire System Architecture & End-to-End Workflow" width="100%" />
+</div>
+
+<br/>
+
+<details>
+<summary>🔍 <b>View Text-Based Flowchart (Mermaid)</b></summary>
+
 ```mermaid
 flowchart TD
     subgraph Client Layer
@@ -61,6 +70,8 @@ flowchart TD
     
     R -->|11. View Leaderboard & Export PDF| DB
 ```
+
+</details>
 
 ---
 
